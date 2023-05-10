@@ -1,17 +1,32 @@
 import { useState } from "react";
 import Card from "../components/Card";
 import classes from "./Register.module.css";
+import axios from "axios";
 
 const Register = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
 
+  const register = async (event) => {
+    event.preventDefault();
+
+    try {
+      const response = await axios.post("/register", {
+        username: username,
+        password: password,
+      });
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <Card>
       <div>
         <h1>Registration Page</h1>
-        <form className={classes.form}>
+        <form className={classes.form} onSubmit={register}>
           <input
             id="emailReg"
             type="email"
@@ -37,7 +52,7 @@ const Register = () => {
             }}
           />
           {password === passwordConfirmation ? (
-            <button>Register</button>
+            <button type="submit">Register</button>
           ) : (
             <p>The password doesn't match.</p>
           )}
