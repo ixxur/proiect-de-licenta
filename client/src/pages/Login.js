@@ -1,13 +1,18 @@
 //import { Form } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+//import { useDispatch } from 'react-redux';
 import Card from "../components/Card";
 import classes from "./Login.module.css";
 import axios from "axios";
+//import { loginSuccess } from '../store/authSlice';
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [loginStatus, setLoginStatus] = useState("");
+  //const dispatch = useDispatch();
+
+  axios.defaults.withCredentials = true;
 
   const login = async (event) => {
     event.preventDefault();
@@ -17,12 +22,30 @@ const Login = () => {
         username: username,
         password: password,
       });
-      console.log(response.data);
-      setIsLoggedIn(true);
+      if(response.data.message){
+        setLoginStatus(response.data.message)
+      } else {
+        setLoginStatus(response.data.user.username)
+      }
     } catch (error) {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        const response = await axios.get("/login");
+        const { user } = response.data;
+        setLoginStatus(response.data.user.username)
+        console.log(user);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    checkLoginStatus();
+  }, []);
 
   return (
     <Card>
@@ -48,7 +71,7 @@ const Login = () => {
           <button type="submit">Login</button>
         </form>
       </div>
-      {isLoggedIn && <h1>{username} has logged in</h1>}
+      {loginStatus !== '' && <h1>{loginStatus}</h1>}
     </Card>
   );
 };
