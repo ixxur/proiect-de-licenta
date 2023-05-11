@@ -1,43 +1,72 @@
 import { useState, useEffect } from "react";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import axios from "axios";
 import "./App.css";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import RootLayout from "./pages/Root";
+//import RootLayout from "./pages/Root";
 import Start from "./pages/Start";
 import Home from "./pages/Home";
+import ProtectedRoutes from "./utils/ProtectedRoutes";
+import { useDispatch, useSelector } from "react-redux";
+import { loginSuccess } from "./store/authSlice";
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <RootLayout />,
-    children: [
-      { index: true, element: <Start /> },
-      { path: "login", element: <Login /> },
-      { path: "register", element: <Register /> },
-      { path: "home", elemnt: <Home /> },
-    ],
-  },
-]);
+// const router = createBrowserRouter([
+//   {
+//     path: "/",
+//     element: <RootLayout />,
+//     children: [
+//       { index: true, element: <Start /> },
+//       { path: "login", element: <Login /> },
+//       { path: "register", element: <Register /> },
+//       { path: "home", elemnt: <Home /> },
+//     ],
+//   },
+// ]);
 
 function App() {
-  // const [message, setMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const dispatch = useDispatch();
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await axios.get("/api");
-  //       setMessage(response.data.message);
-  //     } catch (error) {
-  //       console.error("error fetching data: ", error);
-  //     }
-  //   };
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        const response = await axios.get("/login", { withCredentials: true });
+        const { user } = response.data;
+        dispatch(loginSuccess(user));
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  //   fetchData();
-  // }, []);
+    checkLoginStatus();
+  }, [dispatch]);
 
-  return <RouterProvider router={router} />;
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Start />} />
+        <Route path="/register" element={<Register />} />
+        <Route
+          path="/login"
+          element={isLoggedIn ? <Navigate to="/home" /> : <Login />}
+        />
+        <Route
+          element={isLoggedIn ? <ProtectedRoutes /> : <Navigate to="/login" />}
+        >
+          <Route path="/home" element={<Home />} />
+        </Route>
+        <Route path="*" element={<Navigate to="/login" />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;

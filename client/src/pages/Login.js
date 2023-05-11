@@ -1,16 +1,19 @@
 //import { Form } from "react";
 import { useEffect, useState } from "react";
-//import { useDispatch } from 'react-redux';
+import { useDispatch } from "react-redux";
+//import { useSelector } from "react-redux";
 import Card from "../components/Card";
 import classes from "./Login.module.css";
 import axios from "axios";
-//import { loginSuccess } from '../store/authSlice';
+import { loginSuccess } from "../store/authSlice";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [loginStatus, setLoginStatus] = useState("");
-  //const dispatch = useDispatch();
+  // const [loginStatus, setLoginStatus] = useState("");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   axios.defaults.withCredentials = true;
 
@@ -22,11 +25,9 @@ const Login = () => {
         username: username,
         password: password,
       });
-      if(response.data.message){
-        setLoginStatus(response.data.message)
-      } else {
-        setLoginStatus(response.data.user.username)
-      }
+      const { user } = response.data;
+      dispatch(loginSuccess(user));
+      navigate("/home");
     } catch (error) {
       console.log(error);
     }
@@ -37,7 +38,9 @@ const Login = () => {
       try {
         const response = await axios.get("/login");
         const { user } = response.data;
-        setLoginStatus(response.data.user.username)
+        dispatch(loginSuccess(user));
+        // setLoginStatus(user.username);
+        navigate("/home");
         console.log(user);
       } catch (error) {
         console.log(error);
@@ -45,7 +48,7 @@ const Login = () => {
     };
 
     checkLoginStatus();
-  }, []);
+  }, [dispatch, navigate]);
 
   return (
     <Card>
@@ -71,7 +74,7 @@ const Login = () => {
           <button type="submit">Login</button>
         </form>
       </div>
-      {loginStatus !== '' && <h1>{loginStatus}</h1>}
+      {/* {loginStatus !== "" && <h1>{loginStatus}</h1>} */}
     </Card>
   );
 };

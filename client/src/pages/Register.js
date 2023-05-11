@@ -2,11 +2,13 @@ import { useState } from "react";
 import Card from "../components/Card";
 import classes from "./Register.module.css";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
+  const navigate = useNavigate();
 
   const register = async (event) => {
     event.preventDefault();
@@ -16,7 +18,9 @@ const Register = () => {
         username: username,
         password: password,
       });
+
       console.log(response.data);
+      navigate("/login");
     } catch (error) {
       console.log(error);
     }

@@ -84,13 +84,11 @@ app.get("/api", (req, res) => {
 });
 
 app.get("/login", authenticateJWT, (req, res) => {
-  res
-    .status(200)
-    .send({
-      message: "User is still logged in ",
-      user: { username: req.user.username },
-      loggedIn: true,
-    });
+  res.status(200).send({
+    message: "User is still logged in ",
+    user: { username: req.user.username },
+    loggedIn: true,
+  });
 });
 
 app.post("/login", (req, res) => {
@@ -150,6 +148,11 @@ app.post("/register", (req, res) => {
         .send({ success: true, message: "Success registering new user" });
     });
   });
+});
+
+app.get("/home", (req, res) => {
+  res.status(200).send({ success: true, message: "Here is the home page" });
+  console.log("HOME PAGE");
 });
 
 app.listen(port, () => {
