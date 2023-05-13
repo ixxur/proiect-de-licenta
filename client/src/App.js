@@ -4,25 +4,11 @@ import axios from "axios";
 import "./App.css";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-//import RootLayout from "./pages/Root";
 import Start from "./pages/Start";
 import Home from "./pages/Home";
 import ProtectedRoutes from "./utils/ProtectedRoutes";
 import { useDispatch, useSelector } from "react-redux";
 import { loginSuccess } from "./store/authSlice";
-
-// const router = createBrowserRouter([
-//   {
-//     path: "/",
-//     element: <RootLayout />,
-//     children: [
-//       { index: true, element: <Start /> },
-//       { path: "login", element: <Login /> },
-//       { path: "register", element: <Register /> },
-//       { path: "home", elemnt: <Home /> },
-//     ],
-//   },
-// ]);
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);

@@ -1,6 +1,12 @@
-const Home = () => {
+import Map from "../components/Map";
 
-  return <h1>HOME PAGE</h1>;
+const Home = () => {
+  return (
+    <>
+      <h1>HOME PAGE</h1>
+      <Map />
+    </>
+  );
 };
 
 export default Home;

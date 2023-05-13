@@ -2,7 +2,7 @@ import { useState } from "react";
 import Card from "../components/Card";
 import classes from "./Register.module.css";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const Register = () => {
   const [username, setUsername] = useState("");
@@ -28,7 +28,6 @@ const Register = () => {
 
   return (
     <Card>
-      <div>
         <h1>Registration Page</h1>
         <form className={classes.form} onSubmit={register}>
           <input
@@ -50,7 +49,7 @@ const Register = () => {
           <input
             id="passwordConfirm"
             type="password"
-            placeholder="Re-enter password"
+            placeholder="Confirm password"
             onChange={(event) => {
               setPasswordConfirmation(event.target.value);
             }}
@@ -61,7 +60,7 @@ const Register = () => {
             <p>The password doesn't match.</p>
           )}
         </form>
-      </div>
+        <p>Already have an account? <Link to="/login">Login!</Link></p>
     </Card>
   );
 };

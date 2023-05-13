@@ -111,8 +111,8 @@ app.post("/login", (req, res) => {
           process.env.SECRETJWT,
           { expiresIn: "1h" }
         );
-        const oneHour = 60 * 60 * 1000; //one hour in milliseconds
-        const expirationDate = new Date(Date.now() + oneHour);
+        const time = 60 * 60 * 4 * 1000; //4 hours in milliseconds
+        const expirationDate = new Date(Date.now() + time);
 
         res.cookie("token", token, {
           httpOnly: true,

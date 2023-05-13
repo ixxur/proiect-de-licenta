@@ -6,7 +6,7 @@ import Card from "../components/Card";
 import classes from "./Login.module.css";
 import axios from "axios";
 import { loginSuccess } from "../store/authSlice";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -52,7 +52,6 @@ const Login = () => {
 
   return (
     <Card>
-      <div>
         <h1>Login Page</h1>
         <form className={classes.form} onSubmit={login}>
           <input
@@ -73,8 +72,7 @@ const Login = () => {
           />
           <button type="submit">Login</button>
         </form>
-      </div>
-      {/* {loginStatus !== "" && <h1>{loginStatus}</h1>} */}
+        <p>Don't have an account? <Link to="/register">Sign up!</Link></p>
     </Card>
   );
 };
