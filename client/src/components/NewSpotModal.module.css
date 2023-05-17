@@ -1,0 +1,24 @@
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 40px;
+    outline: none;
+    border: none;
+    max-width: 500px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.modal-content .map-container {
+    height: 300px;
+    width: 100%;
+}
+
+.save-button {
+    align-self: flex-end;
+}

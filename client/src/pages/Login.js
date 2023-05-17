@@ -26,7 +26,12 @@ const Login = () => {
         password: password,
       });
       const { user } = response.data;
-      dispatch(loginSuccess(user));
+      const favoritesRes = await axios.get(
+        `/users/${user.username}/favorites`
+      );
+      const favorites = favoritesRes.data || [];
+      dispatch(loginSuccess({user, favorites}));
+      console.log(user);
       navigate("/home");
     } catch (error) {
       console.log(error);
