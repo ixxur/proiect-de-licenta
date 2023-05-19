@@ -4,8 +4,9 @@ import axios from "axios";
 export const toggleFavoriteSpot = createAsyncThunk(
   "auth/toggleFavoriteSpot",
   async (spotId, { getState, dispatch }) => {
+    console.log(spotId);
     const { username, favorites } = getState().auth.user;
-
+    console.log(getState().auth.user);
     try {
       if (favorites.includes(spotId)) {
         await axios.delete(`/users/${username}/favorites`, {
@@ -22,10 +23,25 @@ export const toggleFavoriteSpot = createAsyncThunk(
   }
 );
 
+export const fetchUserRatings = createAsyncThunk(
+  "auth/fetchUserRatings",
+  async (username, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`/users/${username}/ratings`);
+      console.log(response.data);
+      return response.data;
+      
+    } catch (err) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
 const initialState = {
   user: {
     username: "",
     favorites: [],
+    ratings: [],
   },
   isLoggedIn: false,
 };
@@ -41,6 +57,8 @@ export const authSlice = createSlice({
       console.log(action.payload.user.username);
       state.user.favorites = action.payload.favorites;
       console.log(action.payload.favorites);
+      state.user.ratings = action.payload.ratings;
+      console.log(action.payload.ratings);
       console.log(action.payload);
     },
     logout: (state) => {
@@ -53,26 +71,31 @@ export const authSlice = createSlice({
       console.log("======================");
       console.log(state.user);
       console.log(action.payload);
-      state.user.favorites.push(...action.payload);
+      state.user.favorites.push(action.payload);
       // if (action.payload) {
       //   console.log(action.payload);
-        
+
       //   console.log(state.user);
       // } else {
       //   console.error("Payload is not an array");
       // }
     },
     removeFavoriteSpot: (state, action) => {
-      state.user.favorites = state.user.favorites.filter(
+      console.log(action.payload);
+      const newFavorites = state.user.favorites.filter(
         (spotId) => spotId !== action.payload
       );
+      console.log(newFavorites);
+      state.user.favorites = newFavorites;
+      console.log(state.user.favorites);
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(toggleFavoriteSpot.fulfilled, (state, action) => {
-      // No need to handle state update here because we've already
-      // updated the state in the addFavoriteSpot and removeFavoriteSpot actions.
-    });
+    builder
+      .addCase(toggleFavoriteSpot.fulfilled, (state, action) => {})
+      .addCase(fetchUserRatings.fulfilled, (state, action) => {
+        state.user.ratings = action.payload;
+      });
   },
 });
 

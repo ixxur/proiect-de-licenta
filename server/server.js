@@ -50,15 +50,20 @@ connectToMongoose();
 
 const userSchema = new mongoose.Schema({
   // _id
-  email: { type: String, unique: true },
+  username: { type: String, unique: true },
   favorites: [
-    {
+    { 
       type: mongoose.Schema.Types.ObjectId,
       ref: "Spot",
     },
   ],
+  ratings: [
+    {
+      spotId: { type: mongoose.Schema.Types.ObjectId, ref: "Spot" },
+      rating: { type: Number, required: true },
+    },
+  ],
   //GoogleId: String,
-  //spots: {type: [Schema.Types.ObjectId], ref: 'spots'}
 });
 
 userSchema.plugin(findOrCreate);
@@ -263,6 +268,28 @@ app.get("/spots/:id", async (req, res) => {
   }
 });
 
+app.post("/spots/:id/rating", async (req, res) => {
+  const { id } = req.params;
+  const { rating } = req.body;
+
+  try {
+    // Find the spot by id
+    const spot = await Spot.findById(id);
+
+    // Add the new rating to the array and recalculate the average
+    spot.ratings.push(rating);
+    spot.avgRating =
+      spot.ratings.reduce((a, b) => a + b, 0) / spot.ratings.length;
+
+    // Save the updated spot
+    await spot.save();
+
+    res.status(200).send(spot);
+  } catch (error) {
+    res.status(400).json({ message: "Error updating rating" });
+  }
+});
+
 app.get("/users/:username", async (req, res) => {
   try {
     const username = req.params.username;
@@ -284,7 +311,7 @@ app.get("/users/:username/favorites", async (req, res) => {
       return res.status(404).send({ message: "User not found" });
     }
     res.send(user.favorites);
-    console.log(user.favorites);
+    //console.log(user.favorites);
   } catch (err) {
     console.log(err);
     res.status(500).send({ message: "Internal server error" });
@@ -312,6 +339,7 @@ app.post("/users/:username/favorites", async (req, res) => {
 app.delete("/users/:username/favorites", async (req, res) => {
   try {
     const { spotId } = req.body;
+    console.log("spotId " + spotId);
     const username = req.params.username;
     const user = await User.findOne({ username });
 
@@ -319,14 +347,80 @@ app.delete("/users/:username/favorites", async (req, res) => {
       return res.status(404).send({ message: "User not found" });
     }
 
-    // Remove spotId from favorites
-    user.favorites = user.favorites.filter((id) => id !== spotId);
-    await user.save();
-
+    const index = user.favorites.indexOf(spotId);
+    if (index !== -1) {
+      user.favorites.splice(index, 1);
+      console.log("favorite " + user.favorites);
+      await user.save();
+    }
     res.send(user);
   } catch (err) {
     console.error(err);
     res.status(500).send({ message: "Server error" });
+  }
+});
+
+app.get("/users/:username/ratings", async (req, res) => {
+  const { username } = req.params;
+  console.log(username);
+  try {
+    // Find the user by their username
+    const user = await User.findOne({ username: username }); // Make sure you find the user by the appropriate attribute (email in this case)
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Return the user's ratings
+    // console.log(user.ratings);
+    res.status(200).send(user.ratings);
+  } catch (error) {
+    console.error(error); // Log the error for debugging
+    res
+      .status(500)
+      .json({ message: "Error fetching user's ratings", error: error.message });
+  }
+});
+
+app.post("/users/:username/rating", async (req, res) => {
+  const { username } = req.params;
+  const { spotId, rating } = req.body;
+
+  try {
+    // Find the user by their username
+    const user = await User.findOne({ username: username });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Find the spot by its ID
+    const spot = await Spot.findById(spotId);
+    if (!spot) {
+      return res.status(404).json({ message: "Spot not found" });
+    }
+
+    // Create a new rating for the user
+    const userRating = { spotId, rating };
+
+    // Add the rating to the user's ratings
+    user.ratings.push(userRating);
+
+    // Save the updated user
+    await user.save();
+
+    // Add the rating to the spot's ratings
+    spot.ratings.push(rating);
+
+    // Recalculate the average rating
+    spot.avgRating = spot.ratings.reduce((a, b) => a + b) / spot.ratings.length;
+
+    // Save the updated spot
+    await spot.save();
+    res.status(200).send(userRating);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error rating spot", error: error.message });
   }
 });
 

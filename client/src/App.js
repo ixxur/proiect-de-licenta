@@ -10,7 +10,7 @@ import Home from "./pages/Home";
 import SpotDetailsPage from "./pages/SpotDetailsPage";
 import ProtectedRoutes from "./utils/ProtectedRoutes";
 import { useDispatch, useSelector } from "react-redux";
-import { loginSuccess, addFavoriteSpot } from "./store/authSlice";
+import { loginSuccess } from "./store/authSlice";
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -25,12 +25,17 @@ function App() {
         const favoritesRes = await axios.get(
           `/users/${user.username}/favorites`
         );
-        const favorites = favoritesRes.data || [];
+        const data = await axios.get(`/users/${user.username}`);
+        console.log(data);
+        console.log(data.data.favorites);
+        console.log(data.data.ratings);
+        //const favorites = favoritesRes.data || [];
+        const favorites = data.data.favorites || [];
+        const ratings = data.data.ratings || [];
         console.log(favorites);
         console.log(user);
         console.log(response.data);
-        dispatch(loginSuccess({user, favorites}));
-        //dispatch(addFavoriteSpot(favorites));
+        dispatch(loginSuccess({user, favorites, ratings}));
       } catch (error) {
         console.log(error);
       } finally {

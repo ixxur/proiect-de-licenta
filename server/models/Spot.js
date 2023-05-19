@@ -21,7 +21,9 @@ const SpotSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  imageUrl: String,
+  imageUrl: {type: String},
+  ratings: [Number],
+  avgRating: { type: Number, default: 0 }
 });
 
 module.exports = mongoose.model('Spot', SpotSchema);

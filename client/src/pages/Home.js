@@ -4,6 +4,7 @@ import Map from "../components/Map";
 import NewSpotModal from "../components/NewSpotModal";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
+import SpotListing from "../components/SpotListing";
 
 const Home = () => {
   const [showMap, setShowMap] = useState(false);
@@ -21,6 +22,7 @@ const Home = () => {
       />
       {showMap && <Map username={username}/>}
       <NewSpotModal />
+      <SpotListing />
     </>
   );
 };

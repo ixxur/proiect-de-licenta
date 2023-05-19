@@ -37,7 +37,6 @@ const DetailsModal = ({ spot, open, onClose }) => {
         <Typography className={classes.timeToVisit}>
           Best time to visit: {whenToGo}
         </Typography>
-
         <Link to={`/spot/${_id}`}>See more details</Link>
       </Box>
     </Modal>

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { GoogleMap, Marker } from "@react-google-maps/api";
+import { google } from "window-or-global";
 import axios from "axios";
 import DetailsModal from "./DetailsModal";
 import blueMarker from "../assets/pictures/blue-marker.png";
 import redMarker from "../assets/pictures/red-marker.png";
+import { useSelector } from "react-redux";
 
 const containerStyle = {
   width: "100%",
@@ -16,8 +18,8 @@ const center = {
 };
 
 const Map = ({ username }) => {
+  const reduxFavorites = useSelector((state) => state.auth.user.favorites);
   const [spots, setSpots] = useState([]);
-  const [favorites, setFavorites] = useState([]);
   const [selectedSpot, setSelectedSpot] = useState(null);
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
 
@@ -25,16 +27,16 @@ const Map = ({ username }) => {
     const getAllSpots = async () => {
       try {
         const spotsResponse = await axios.get("/spots");
-        const userResponse = await axios.get(`/users/${username}/`);
-        console.log(userResponse.data);
+        // const userResponse = await axios.get(`/users/${username}/`);
+        // console.log(userResponse.data);
         setSpots(spotsResponse.data);
-        setFavorites(userResponse.data.favorites);
+        // setFavorites(userResponse.data.favorites);
       } catch (err) {
         console.log("Error fetching spots ", err);
       }
     };
     getAllSpots();
-  }, [username]);
+  }, [username, reduxFavorites]);
 
   const handleClick = (spot) => {
     setSelectedSpot(spot);
@@ -54,7 +56,10 @@ const Map = ({ username }) => {
             key={spot._id}
             position={{ lat: spot.latitude, lng: spot.longitude }}
             onClick={() => handleClick(spot)}
-            icon={favorites.includes(spot._id) ? redMarker : blueMarker}
+            icon={{
+              url: reduxFavorites.includes(spot._id) ? redMarker : blueMarker,
+              scaledSize: new google.maps.Size(65, 50),
+            }}
           />
         ))}
       </GoogleMap>
