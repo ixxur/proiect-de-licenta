@@ -3,12 +3,24 @@ import axios from "axios";
 import { Button, TextField, ListItem, ListItemText } from "@mui/material";
 import { format } from "timeago.js";
 
-function Comment({ comment, username, onUpdate}) {
+function Comment({ comment, username, onUpdate }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedText, setEditedText] = useState(comment.text);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleEdit = () => {
     setIsEditing(true);
+  };
+
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    try {
+      await axios.delete(`/comments/${comment._id}`);
+      onUpdate();
+    } catch (error) {
+      console.log("Error deleting comment:", error);
+    }
+    setIsDeleting(false);
   };
 
   const handleChange = (event) => {
@@ -21,6 +33,10 @@ function Comment({ comment, username, onUpdate}) {
     setIsEditing(false);
     onUpdate();
   };
+
+  if (isDeleting) {
+    return <p>Deleting comment...</p>;
+  }
 
   if (isEditing) {
     return (
@@ -35,10 +51,13 @@ function Comment({ comment, username, onUpdate}) {
     <ListItem>
       <ListItemText
         primary={comment.username}
-        secondary={comment.text + " • " + format(comment.updatedAt) }
+        secondary={comment.text + " • " + format(comment.updatedAt)}
       />
       {username === comment.username && (
-        <Button onClick={handleEdit}>Edit</Button>
+        <div>
+          <Button onClick={handleEdit}>Edit</Button>
+          <Button style={{color: 'red'}} onClick={handleDelete}>Delete</Button>
+        </div>
       )}
     </ListItem>
   );

@@ -15,6 +15,7 @@ const Comment = require("./models/Comment");
 //const User = require("./models/User");
 const findOrCreate = require("mongoose-findorcreate");
 const passportLocalMongoose = require("passport-local-mongoose");
+const axios = require('axios');
 require("dotenv/config");
 
 const app = express();
@@ -452,32 +453,32 @@ app.post("/users/:username/rating", async (req, res) => {
   }
 });
 
-app.post('/spots/:spotId/comments', async (req, res) => {
+app.post("/spots/:spotId/comments", async (req, res) => {
   const comment = new Comment({
     spotId: req.params.spotId,
     username: req.body.username,
-    text: req.body.text
+    text: req.body.text,
   });
-  
+
   try {
     await comment.save();
     res.status(201).json(comment);
   } catch (error) {
-    res.status(500).json({ error: 'Error posting comment' });
+    res.status(500).json({ error: "Error posting comment" });
   }
 });
 
-app.get('/spots/:spotId/comments', async (req, res) => {
+app.get("/spots/:spotId/comments", async (req, res) => {
   try {
     const spotId = req.params.spotId;
     const comments = await Comment.find({ spotId: spotId });
     res.json(comments);
   } catch (error) {
-    res.status(500).json({ error: 'Error fetching comments' });
+    res.status(500).json({ error: "Error fetching comments" });
   }
 });
 
-app.put('/comments/:commentId', async (req, res) => {
+app.put("/comments/:commentId", async (req, res) => {
   const { commentId } = req.params;
   const { text } = req.body;
 
@@ -494,7 +495,69 @@ app.put('/comments/:commentId', async (req, res) => {
 
     res.status(200).json({ message: "Comment updated successfully" });
   } catch (error) {
-    res.status(500).json({ message: "Error updating comment", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error updating comment", error: error.message });
+  }
+});
+
+app.delete("/comments/:commentId", async (req, res) => {
+  const { commentId } = req.params;
+  try {
+    // Verify the comment exists and belongs to the user
+    const comment = await Comment.findById(commentId);
+    if (!comment) {
+      return res.status(404).json({ message: "Comment not found" });
+    }
+
+    // (Optional) Verify the logged-in user owns the comment
+    // This requires some kind of authentication middleware that puts the user's info into req.user
+    if (req.user.username !== comment.username) {
+      return res
+        .status(403)
+        .json({ message: "Not authorized to delete this comment" });
+    }
+
+    // Delete the comment
+    await Comment.deleteOne({ _id: commentId });
+    res.status(200).json({ message: "Comment deleted successfully" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error deleting comment", error: error.message });
+  }
+});
+
+app.get("/spots/:id/weather", async (req, res) => {
+  try {
+    const spot = await Spot.findById(req.params.id);
+    if (!spot) {
+      return res.status(404).json({ message: "Spot not found" });
+    }
+
+    try {
+      const weatherApiKey = process.env.OPEN_WEATHER_API_KEY;
+      const weatherResponse = await axios.get(
+        `https://api.openweathermap.org/data/2.5/onecall?lat=${spot.latitude}&lon=${spot.longitude}&exclude=current,minutely,hourly,alerts&appid=${weatherApiKey}`
+      );
+      res.send(weatherResponse.data);
+    } catch (axiosError) {
+      console.error(axiosError);
+      res
+        .status(500)
+        .json({
+          message: "Error fetching weather data from OpenWeatherMap",
+          error: axiosError.message,
+        });
+    }
+  } catch (mongoError) {
+    console.error(mongoError);
+    res
+      .status(500)
+      .json({
+        message: "Error fetching spot from MongoDB",
+        error: mongoError.message,
+      });
   }
 });
 

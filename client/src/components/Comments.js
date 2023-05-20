@@ -5,13 +5,13 @@ import CommentForm from "./CommentForm";
 import Comment from "./Comment";
 
 
-function Comments({ spotId, username }) {
+const  Comments = ({ spotId, username }) => {
   const [comments, setComments] = useState([]);
 
   const refreshComments = async () => {
     const response = await axios.get(`/spots/${spotId}/comments`);
     setComments(response.data);
-    console.log(response.data);
+    //console.log(response.data);
   };
 
   useEffect(() => {

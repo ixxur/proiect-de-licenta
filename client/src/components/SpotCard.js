@@ -10,65 +10,65 @@ import Typography from "@mui/material/Typography";
 import Rating from "@mui/material/Rating";
 
 const SpotCard = ({ spot }) => {
-  const dispatch = useDispatch();
-  const user = useSelector((state) => state.auth.user);
+  // const dispatch = useDispatch();
+  // const user = useSelector((state) => state.auth.user);
 
-  const userRatings = user.ratings || [];
-  const userRatingObject = userRatings.find(
-    (rating) => rating.spotId === spot._id
-  );
+  // const userRatings = user.ratings || [];
+  // const userRatingObject = userRatings.find(
+  //   (rating) => rating.spotId === spot._id
+  // );
 
-  const [userRating, setUserRating] = useState(
-    userRatingObject ? userRatingObject.rating : null
-  );
-  const [averageRating, setAverageRating] = useState(spot.avgRating);
+  // const [userRating, setUserRating] = useState(
+  //   userRatingObject ? userRatingObject.rating : null
+  // );
+  // const [averageRating, setAverageRating] = useState(spot.avgRating);
 
   // useEffect(() => {
   //     dispatch(fetchUserRatings(user.username));
   // }, [dispatch, user]);
 
-  useEffect(() => {
-    const fetchSpot = async () => {
-      try {
-        const response = await axios.get(`/spots/${spot._id}`);
-        setAverageRating(response.data.avgRating);
-      } catch (error) {
-        console.error("Error fetching spot:", error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchSpot = async () => {
+  //     try {
+  //       const response = await axios.get(`/spots/${spot._id}`);
+  //       // setAverageRating(response.data.avgRating);
+  //     } catch (error) {
+  //       console.error("Error fetching spot:", error);
+  //     }
+  //   };
 
-    fetchSpot();
-  }, [spot._id, userRating]);
+  //   fetchSpot();
+  // }, [spot._id]);
 
-  const handleRatingChange = async (event, newValue) => {
-    setUserRating(newValue);
+  // const handleRatingChange = async (event, newValue) => {
+  //   setUserRating(newValue);
 
-    // Send the new rating to the server
-    try {
-      const response = await axios.post(`/users/${user.username}/rating`, {
-        spotId: spot._id,
-        rating: newValue,
-      });
-      // //  console.log("handleRatingChange - spotId: " + spot._id);
-      // //   const response = await axios.post(`/spots/${spot._id}/rating`, {
-      // //     rating: newValue,
-      // //   });
-      // const response = await axios.get(`/spots/${spot._id}`);
-      // console.log(response);
-      // setAverageRating(response.data.avgRating);
-      console.log(response);
-      setAverageRating(response.data.avgRating);
-      dispatch(
-        postUserRating({
-          username: user.username,
-          spotId: spot._id,
-          rating: newValue,
-        })
-      );
-    } catch (error) {
-      console.log("Error updating rating:", error);
-    }
-  };
+  //   // Send the new rating to the server
+  //   try {
+  //     const response = await axios.post(`/users/${user.username}/rating`, {
+  //       spotId: spot._id,
+  //       rating: newValue,
+  //     });
+  //     // //  console.log("handleRatingChange - spotId: " + spot._id);
+  //     // //   const response = await axios.post(`/spots/${spot._id}/rating`, {
+  //     // //     rating: newValue,
+  //     // //   });
+  //     // const response = await axios.get(`/spots/${spot._id}`);
+  //     // console.log(response);
+  //     // setAverageRating(response.data.avgRating);
+  //     console.log(response);
+  //     setAverageRating(response.data.avgRating);
+  //     dispatch(
+  //       postUserRating({
+  //         username: user.username,
+  //         spotId: spot._id,
+  //         rating: newValue,
+  //       })
+  //     );
+  //   } catch (error) {
+  //     console.log("Error updating rating:", error);
+  //   }
+  // };
 
   return (
     <Card sx={{ maxWidth: 345 }}>
@@ -83,12 +83,13 @@ const SpotCard = ({ spot }) => {
           {spot.name}
         </Typography>
         <Rating
-          name="user-rating"
-          value={userRating}
+          name="read-only"
+          value={spot.avgRating}
           precision={0.5}
-          onChange={handleRatingChange}
+          readOnly
+          // onChange={handleRatingChange}
         />
-        <Typography variant="subtitle1">Rating: {averageRating}</Typography>
+        <Typography variant="subtitle1">Rating: {spot.avgRating}</Typography>
         <Typography variant="body2" color="text.secondary">
           {spot.description}
         </Typography>

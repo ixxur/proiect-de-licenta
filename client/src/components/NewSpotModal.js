@@ -54,7 +54,7 @@ function NewSpotModal() {
     axios
       .post("/spot", spot)
       .then((response) => {
-        console.log(response.data);
+        //console.log(response.data);
         setNotification({ message: "Spot saved successfully", open: true });
       })
       .catch((error) => {
