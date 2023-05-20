@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUserRatings } from "../store/authSlice";
+import { postUserRating } from "../store/authSlice";
 import { Link } from "react-router-dom";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -12,8 +12,8 @@ import Rating from "@mui/material/Rating";
 const SpotCard = ({ spot }) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
+
   const userRatings = user.ratings || [];
-  //console.log(user.ratings);
   const userRatingObject = userRatings.find(
     (rating) => rating.spotId === spot._id
   );
@@ -23,11 +23,9 @@ const SpotCard = ({ spot }) => {
   );
   const [averageRating, setAverageRating] = useState(spot.avgRating);
 
-  useEffect(() => {
-    if (user && user.id) {
-      dispatch(fetchUserRatings(user.id));
-    }
-  }, [dispatch, user]);
+  // useEffect(() => {
+  //     dispatch(fetchUserRatings(user.username));
+  // }, [dispatch, user]);
 
   useEffect(() => {
     const fetchSpot = async () => {
@@ -47,17 +45,26 @@ const SpotCard = ({ spot }) => {
 
     // Send the new rating to the server
     try {
-      await axios.post(`/users/${user.username}/rating`, {
+      const response = await axios.post(`/users/${user.username}/rating`, {
         spotId: spot._id,
         rating: newValue,
       });
-      //  console.log("handleRatingChange - spotId: " + spot._id);
-      //   const response = await axios.post(`/spots/${spot._id}/rating`, {
-      //     rating: newValue,
-      //   });
-      const response = await axios.get(`/spots/${spot._id}`);
+      // //  console.log("handleRatingChange - spotId: " + spot._id);
+      // //   const response = await axios.post(`/spots/${spot._id}/rating`, {
+      // //     rating: newValue,
+      // //   });
+      // const response = await axios.get(`/spots/${spot._id}`);
+      // console.log(response);
+      // setAverageRating(response.data.avgRating);
       console.log(response);
       setAverageRating(response.data.avgRating);
+      dispatch(
+        postUserRating({
+          username: user.username,
+          spotId: spot._id,
+          rating: newValue,
+        })
+      );
     } catch (error) {
       console.log("Error updating rating:", error);
     }

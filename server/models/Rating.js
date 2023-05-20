@@ -6,4 +6,4 @@ const RatingSchema = new mongoose.Schema({
   rating: { type: Number, required: true }
 });
 
-module.exports = mongoose.model('Ratinng', RatingSchema);
+module.exports = mongoose.model('Rating', RatingSchema);

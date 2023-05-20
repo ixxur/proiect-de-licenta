@@ -26,12 +26,14 @@ const Login = () => {
         password: password,
       });
       const { user } = response.data;
-      const data = await axios.get(`/users/${user.username}`);
+      const favoritesResponse = await axios.get(`/users/${user.username}`);
       // const favoritesRes = await axios.get(
       //   `/users/${user.username}/favorites`
       // );
-      const favorites = data.data.favorites || [];
-      const ratings = data.data.ratings || [];
+      const favorites = favoritesResponse.data.favorites || [];
+      const ratingsResponse = await axios.get(`/users/${user.username}/ratings`);
+      const ratings = ratingsResponse.data.map(rating => ({ spotId: rating.spotId, rating: rating.rating }));
+      //const ratings = data.data.ratings || [];
       dispatch(loginSuccess({ user, favorites, ratings }));
       console.log(user);
       navigate("/home");

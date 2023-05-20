@@ -28,9 +28,22 @@ export const fetchUserRatings = createAsyncThunk(
   async (username, { rejectWithValue }) => {
     try {
       const response = await axios.get(`/users/${username}/ratings`);
-      console.log(response.data);
-      return response.data;
+      const ratings = response.data.map(rating => ({ spotId: rating.spotId, rating: rating.rating }));
+      //console.log(ratings);
+      return ratings;
       
+    } catch (err) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const postUserRating = createAsyncThunk(
+  "auth/postUserRating",
+  async ({username, spotId, rating}, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(`/users/${username}/rating`, {spotId, rating});
+      return response.data;
     } catch (err) {
       return rejectWithValue(err.response.data);
     }
@@ -95,6 +108,14 @@ export const authSlice = createSlice({
       .addCase(toggleFavoriteSpot.fulfilled, (state, action) => {})
       .addCase(fetchUserRatings.fulfilled, (state, action) => {
         state.user.ratings = action.payload;
+      })
+      .addCase(postUserRating.fulfilled, (state, action) => {
+        const ratingObject = state.user.ratings.find(rating => rating.spotId === action.payload.spotId);
+        if (ratingObject) {
+          ratingObject.rating = action.payload.rating;
+        } else {
+          state.user.ratings.push(action.payload);
+        }
       });
   },
 });

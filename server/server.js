@@ -371,10 +371,10 @@ app.get("/users/:username/ratings", async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-
+    const userRatings = await Rating.find({ _id: { $in: user.ratings }});
     // Return the user's ratings
-    // console.log(user.ratings);
-    res.status(200).send(user.ratings);
+    console.log(userRatings);
+    res.status(200).send(userRatings);
   } catch (error) {
     console.error(error); // Log the error for debugging
     res
@@ -390,63 +390,44 @@ app.post("/users/:username/rating", async (req, res) => {
   console.log(req.body);
   try {
     // Find the user by their username
-    const user = await User.findOne({ username: username });
+    const user = await User.findOne({ username: username }).populate('ratings');
+    console.log("USER " + user);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
     // Find the spot by its ID
     const spot = await Spot.findById(spotId);
+    console.log("SPOT " + spot)
     if (!spot) {
       return res.status(404).json({ message: "Spot not found" });
     }
-    console.log("user " + user.ratings);
-    console.log("spot " + spot.ratings);
-    console.log("=============")
-    // Check if the user has already rated this spot
-    const userRatingIndex = user.ratings.findIndex((r) => {
-      r.spotId === spotId;
-      console.log("r.spotId " + r.spotId);
-      console.log("r.spotId.toString() " + r.spotId.toString());
-      console.log("spotId " + spotId);
-    });
-    console.log("==============")
-    console.log("userRatingIndex " + userRatingIndex);
-    const spotRatingIndex = spot.ratings.findIndex((r) => {
-      r.username === user.username;
-      console.log("r.username " + r.username);
-      //console.log("r.username.toString()" + r.userId.toString());
-      console.log("user.username " + user.username);
-    });
-    console.log("spotRatingIndex " + spotRatingIndex);
-
-    if (userRatingIndex > -1) {
-      // If the user has already rated the spot, update the rating
-      user.ratings[userRatingIndex].rating = rating;
+    let userRating = await Rating.findOne({ username: username, spotId: spotId });
+    console.log("USER RATING 1 " + userRating);
+    if (!userRating) {
+      userRating = new Rating({ username: username, spotId: spotId, rating: rating });
+      user.ratings.push(userRating._id);
+      console.log("USER RATING 2: " + userRating);
     } else {
-      // If the user has not rated the spot, create a new rating
-      user.ratings.push({ spotId, rating });
+      userRating.rating = rating;
+      console.log("USER RATING 3: " + userRating);
     }
 
-    // Do the same for the spot
-    if (spotRatingIndex > -1) {
-      spot.ratings[spotRatingIndex].rating = rating;
-    } else {
-      spot.ratings.push({ userId: user._id, rating });
-    }
-
-    // Save the updated user and spot
+    await userRating.save();
     await user.save();
-    await spot.save();
 
-    // Calculate the average rating
-    spot.avgRating =
-      spot.ratings.reduce((a, r) => a + r.rating, 0) / spot.ratings.length;
-    await spot.save();
+    spot.ratings.push(userRating._id);
+    //await spot.save();
 
+    spot.avgRating = await Rating.aggregate([
+      { $match: { _id: { $in: spot.ratings }}},
+      { $group: { _id: null, avgRating: { $avg: "$rating" }}}
+    ]).then(result => result[0]?.avgRating || 0);
+       
+    await spot.save();
+    console.log(spot.avgRating);
     res.status(200).send({ avgRating: spot.avgRating });
   } catch (error) {
-    console.log(error.message);
     res
       .status(500)
       .json({ message: "Error rating spot", error: error.message });

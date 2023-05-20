@@ -25,13 +25,16 @@ function App() {
         // const favoritesRes = await axios.get(
         //   `/users/${user.username}/favorites`
         // );
-        const data = await axios.get(`/users/${user.username}`);
-        console.log(data);
-        console.log(data.data.favorites);
-        console.log(data.data.ratings);
+        const favoritesResponse = await axios.get(`/users/${user.username}`);
+        console.log(favoritesResponse);
+        console.log(favoritesResponse.data.favorites);
+        
         //const favorites = favoritesRes.data || [];
-        const favorites = data.data.favorites || [];
-        const ratings = data.data.ratings || [];
+        const favorites = favoritesResponse.data.favorites || [];
+        const ratingsResponse = await axios.get(`/users/${user.username}/ratings`);
+        const ratings = ratingsResponse.data.map(rating => ({ spotId: rating.spotId, rating: rating.rating }));
+        //const ratings = data.data.ratings || [];
+        console.log(ratings);
         console.log(favorites);
         console.log(user);
         console.log(response.data);
