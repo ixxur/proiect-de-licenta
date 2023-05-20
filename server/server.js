@@ -11,6 +11,7 @@ const bcrypt = require("bcrypt");
 //const Schemas = require("../models/Schemas.js");
 const Spot = require("./models/Spot");
 const Rating = require("./models/Rating");
+const Comment = require("./models/Comment");
 //const User = require("./models/User");
 const findOrCreate = require("mongoose-findorcreate");
 const passportLocalMongoose = require("passport-local-mongoose");
@@ -371,7 +372,7 @@ app.get("/users/:username/ratings", async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    const userRatings = await Rating.find({ _id: { $in: user.ratings }});
+    const userRatings = await Rating.find({ _id: { $in: user.ratings } });
     // Return the user's ratings
     console.log(userRatings);
     res.status(200).send(userRatings);
@@ -390,7 +391,7 @@ app.post("/users/:username/rating", async (req, res) => {
   console.log(req.body);
   try {
     // Find the user by their username
-    const user = await User.findOne({ username: username }).populate('ratings');
+    const user = await User.findOne({ username: username }).populate("ratings");
     console.log("USER " + user);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -398,14 +399,21 @@ app.post("/users/:username/rating", async (req, res) => {
 
     // Find the spot by its ID
     const spot = await Spot.findById(spotId);
-    console.log("SPOT " + spot)
+    console.log("SPOT " + spot);
     if (!spot) {
       return res.status(404).json({ message: "Spot not found" });
     }
-    let userRating = await Rating.findOne({ username: username, spotId: spotId });
+    let userRating = await Rating.findOne({
+      username: username,
+      spotId: spotId,
+    });
     console.log("USER RATING 1 " + userRating);
     if (!userRating) {
-      userRating = new Rating({ username: username, spotId: spotId, rating: rating });
+      userRating = new Rating({
+        username: username,
+        spotId: spotId,
+        rating: rating,
+      });
       user.ratings.push(userRating._id);
       console.log("USER RATING 2: " + userRating);
     } else {
@@ -416,14 +424,24 @@ app.post("/users/:username/rating", async (req, res) => {
     await userRating.save();
     await user.save();
 
-    spot.ratings.push(userRating._id);
+    //spot.ratings.push(userRating._id);
     //await spot.save();
 
     spot.avgRating = await Rating.aggregate([
-      { $match: { _id: { $in: spot.ratings }}},
-      { $group: { _id: null, avgRating: { $avg: "$rating" }}}
-    ]).then(result => result[0]?.avgRating || 0);
-       
+      { $match: { _id: { $in: spot.ratings } } },
+      { $group: { _id: null, avgRating: { $avg: "$rating" } } },
+    ]).then((result) => {
+      if (result[0]) {
+        return Number(result[0].avgRating.toFixed(1));
+      } else {
+        return 0;
+      }
+    });
+
+    if (!spot.ratings.includes(userRating._id)) {
+      spot.ratings.push(userRating._id);
+    }
+
     await spot.save();
     console.log(spot.avgRating);
     res.status(200).send({ avgRating: spot.avgRating });
@@ -431,6 +449,52 @@ app.post("/users/:username/rating", async (req, res) => {
     res
       .status(500)
       .json({ message: "Error rating spot", error: error.message });
+  }
+});
+
+app.post('/spots/:spotId/comments', async (req, res) => {
+  const comment = new Comment({
+    spotId: req.params.spotId,
+    username: req.body.username,
+    text: req.body.text
+  });
+  
+  try {
+    await comment.save();
+    res.status(201).json(comment);
+  } catch (error) {
+    res.status(500).json({ error: 'Error posting comment' });
+  }
+});
+
+app.get('/spots/:spotId/comments', async (req, res) => {
+  try {
+    const spotId = req.params.spotId;
+    const comments = await Comment.find({ spotId: spotId });
+    res.json(comments);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching comments' });
+  }
+});
+
+app.put('/comments/:commentId', async (req, res) => {
+  const { commentId } = req.params;
+  const { text } = req.body;
+
+  try {
+    const comment = await Comment.findById(commentId);
+
+    if (!comment) {
+      return res.status(404).json({ message: "Comment not found" });
+    }
+
+    comment.text = text;
+
+    await comment.save();
+
+    res.status(200).json({ message: "Comment updated successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating comment", error: error.message });
   }
 });
 
