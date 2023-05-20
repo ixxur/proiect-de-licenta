@@ -26,11 +26,13 @@ const Login = () => {
         password: password,
       });
       const { user } = response.data;
-      const favoritesRes = await axios.get(
-        `/users/${user.username}/favorites`
-      );
-      const favorites = favoritesRes.data || [];
-      dispatch(loginSuccess({user, favorites}));
+      const data = await axios.get(`/users/${user.username}`);
+      // const favoritesRes = await axios.get(
+      //   `/users/${user.username}/favorites`
+      // );
+      const favorites = data.data.favorites || [];
+      const ratings = data.data.ratings || [];
+      dispatch(loginSuccess({ user, favorites, ratings }));
       console.log(user);
       navigate("/home");
     } catch (error) {
@@ -57,27 +59,29 @@ const Login = () => {
 
   return (
     <Card>
-        <h1>Login Page</h1>
-        <form className={classes.form} onSubmit={login}>
-          <input
-            id="email"
-            type="email"
-            placeholder="Email"
-            onChange={(event) => {
-              setUsername(event.target.value);
-            }}
-          />
-          <input
-            id="password"
-            type="password"
-            placeholder="Password"
-            onChange={(event) => {
-              setPassword(event.target.value);
-            }}
-          />
-          <button type="submit">Login</button>
-        </form>
-        <p>Don't have an account? <Link to="/register">Sign up!</Link></p>
+      <h1>Login Page</h1>
+      <form className={classes.form} onSubmit={login}>
+        <input
+          id="email"
+          type="email"
+          placeholder="Email"
+          onChange={(event) => {
+            setUsername(event.target.value);
+          }}
+        />
+        <input
+          id="password"
+          type="password"
+          placeholder="Password"
+          onChange={(event) => {
+            setPassword(event.target.value);
+          }}
+        />
+        <button type="submit">Login</button>
+      </form>
+      <p>
+        Don't have an account? <Link to="/register">Sign up!</Link>
+      </p>
     </Card>
   );
 };

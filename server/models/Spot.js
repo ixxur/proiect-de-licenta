@@ -22,7 +22,6 @@ const SpotSchema = new mongoose.Schema({
     required: true,
   },
   imageUrl: {type: String},
-  ratings: [Number],
   avgRating: { type: Number, default: 0 }
 });
 

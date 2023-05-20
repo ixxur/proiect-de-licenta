@@ -22,9 +22,9 @@ function App() {
       try {
         const response = await axios.get("/login", { withCredentials: true });
         const { user } = response.data;
-        const favoritesRes = await axios.get(
-          `/users/${user.username}/favorites`
-        );
+        // const favoritesRes = await axios.get(
+        //   `/users/${user.username}/favorites`
+        // );
         const data = await axios.get(`/users/${user.username}`);
         console.log(data);
         console.log(data.data.favorites);

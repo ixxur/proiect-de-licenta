@@ -10,6 +10,7 @@ const bcrypt = require("bcrypt");
 //const routesHandler = require('./routes/auth.js');
 //const Schemas = require("../models/Schemas.js");
 const Spot = require("./models/Spot");
+const Rating = require("./models/Rating");
 //const User = require("./models/User");
 const findOrCreate = require("mongoose-findorcreate");
 const passportLocalMongoose = require("passport-local-mongoose");
@@ -50,17 +51,17 @@ connectToMongoose();
 
 const userSchema = new mongoose.Schema({
   // _id
-  username: { type: String, unique: true },
+  username: { type: String, unique: true, required: true },
   favorites: [
-    { 
+    {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Spot",
     },
   ],
   ratings: [
     {
-      spotId: { type: mongoose.Schema.Types.ObjectId, ref: "Spot" },
-      rating: { type: Number, required: true },
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Rating",
     },
   ],
   //GoogleId: String,
@@ -385,7 +386,8 @@ app.get("/users/:username/ratings", async (req, res) => {
 app.post("/users/:username/rating", async (req, res) => {
   const { username } = req.params;
   const { spotId, rating } = req.body;
-
+  console.log(req.params);
+  console.log(req.body);
   try {
     // Find the user by their username
     const user = await User.findOne({ username: username });
@@ -398,26 +400,53 @@ app.post("/users/:username/rating", async (req, res) => {
     if (!spot) {
       return res.status(404).json({ message: "Spot not found" });
     }
+    console.log("user " + user.ratings);
+    console.log("spot " + spot.ratings);
+    console.log("=============")
+    // Check if the user has already rated this spot
+    const userRatingIndex = user.ratings.findIndex((r) => {
+      r.spotId === spotId;
+      console.log("r.spotId " + r.spotId);
+      console.log("r.spotId.toString() " + r.spotId.toString());
+      console.log("spotId " + spotId);
+    });
+    console.log("==============")
+    console.log("userRatingIndex " + userRatingIndex);
+    const spotRatingIndex = spot.ratings.findIndex((r) => {
+      r.username === user.username;
+      console.log("r.username " + r.username);
+      //console.log("r.username.toString()" + r.userId.toString());
+      console.log("user.username " + user.username);
+    });
+    console.log("spotRatingIndex " + spotRatingIndex);
 
-    // Create a new rating for the user
-    const userRating = { spotId, rating };
+    if (userRatingIndex > -1) {
+      // If the user has already rated the spot, update the rating
+      user.ratings[userRatingIndex].rating = rating;
+    } else {
+      // If the user has not rated the spot, create a new rating
+      user.ratings.push({ spotId, rating });
+    }
 
-    // Add the rating to the user's ratings
-    user.ratings.push(userRating);
+    // Do the same for the spot
+    if (spotRatingIndex > -1) {
+      spot.ratings[spotRatingIndex].rating = rating;
+    } else {
+      spot.ratings.push({ userId: user._id, rating });
+    }
 
-    // Save the updated user
+    // Save the updated user and spot
     await user.save();
-
-    // Add the rating to the spot's ratings
-    spot.ratings.push(rating);
-
-    // Recalculate the average rating
-    spot.avgRating = spot.ratings.reduce((a, b) => a + b) / spot.ratings.length;
-
-    // Save the updated spot
     await spot.save();
-    res.status(200).send(userRating);
+
+    // Calculate the average rating
+    spot.avgRating =
+      spot.ratings.reduce((a, r) => a + r.rating, 0) / spot.ratings.length;
+    await spot.save();
+
+    res.status(200).send({ avgRating: spot.avgRating });
   } catch (error) {
+    console.log(error.message);
     res
       .status(500)
       .json({ message: "Error rating spot", error: error.message });

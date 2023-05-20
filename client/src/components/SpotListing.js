@@ -10,13 +10,15 @@ const SpotListing = () => {
     const getAllSpots = async () => {
         try {
           const spotsResponse = await axios.get("/spots");
+          console.log(spotsResponse.data);
           setSpots(spotsResponse.data);
+
         } catch (err) {
           console.log("Error fetching spots ", err);
         }
       };
       getAllSpots();
-  });
+  },[]);
 
   return (
     <Box sx={{ flexGrow: 1 }}>

@@ -56,6 +56,7 @@ const SpotCard = ({ spot }) => {
       //     rating: newValue,
       //   });
       const response = await axios.get(`/spots/${spot._id}`);
+      console.log(response);
       setAverageRating(response.data.avgRating);
     } catch (error) {
       console.log("Error updating rating:", error);
