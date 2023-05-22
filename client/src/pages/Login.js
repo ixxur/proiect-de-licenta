@@ -26,15 +26,20 @@ const Login = () => {
         password: password,
       });
       const { user } = response.data;
+      console.log(user);
       const favoritesResponse = await axios.get(`/users/${user.username}`);
       // const favoritesRes = await axios.get(
       //   `/users/${user.username}/favorites`
       // );
+      const name = favoritesResponse.data.name;
+      const role = favoritesResponse.data.role;
+      const profilePicture = favoritesResponse.data.profilePicture;
+      const registrationDate = favoritesResponse.data.createdAt;
       const favorites = favoritesResponse.data.favorites || [];
       const ratingsResponse = await axios.get(`/users/${user.username}/ratings`);
       const ratings = ratingsResponse.data.map(rating => ({ spotId: rating.spotId, rating: rating.rating }));
       //const ratings = data.data.ratings || [];
-      dispatch(loginSuccess({ user, favorites, ratings }));
+      dispatch(loginSuccess({ user, name, role, favorites, ratings, profilePicture, registrationDate }));
       console.log(user);
       navigate("/home");
     } catch (error) {

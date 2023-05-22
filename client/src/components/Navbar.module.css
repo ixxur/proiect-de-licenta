@@ -1,0 +1,9 @@
+.navLink {
+  color: inherit;
+  text-decoration: none;
+}
+
+.navLink:active {
+  font-weight: bold;
+  color: white;
+}

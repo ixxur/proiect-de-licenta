@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Button, TextField, ListItem, ListItemText } from "@mui/material";
 import { format } from "timeago.js";
+import { useSelector } from "react-redux";
 
 function Comment({ comment, username, onUpdate }) {
+  const { role } = useSelector((state) => state.auth.user);
   const [isEditing, setIsEditing] = useState(false);
   const [editedText, setEditedText] = useState(comment.text);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -53,10 +55,12 @@ function Comment({ comment, username, onUpdate }) {
         primary={comment.username}
         secondary={comment.text + " • " + format(comment.updatedAt)}
       />
-      {username === comment.username && (
+      {(username === comment.username || role === "admin") && (
         <div>
           <Button onClick={handleEdit}>Edit</Button>
-          <Button style={{color: 'red'}} onClick={handleDelete}>Delete</Button>
+          <Button style={{ color: "red" }} onClick={handleDelete}>
+            Delete
+          </Button>
         </div>
       )}
     </ListItem>

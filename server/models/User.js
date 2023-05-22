@@ -2,15 +2,21 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
 const userSchema = new mongoose.Schema({
-    // _id
-    email: { type: String },
-    password: { type: String },
-    favorites: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Spot",
-      },
-    ],
-    //GoogleId: String,
-    //spots: {type: [Schema.Types.ObjectId], ref: 'spots'}
-  });
+  // _id
+  username: { type: String, unique: true, required: true },
+  profilePicture: { type: Number, default: 0 },
+  name: { type: String, required: true },
+  favorites: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Spot",
+    },
+  ],
+  ratings: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Rating",
+    },
+  ],
+  //GoogleId: String,
+}, { timestamps: true });

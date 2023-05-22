@@ -5,22 +5,23 @@ import NewSpotModal from "../components/NewSpotModal";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import SpotListing from "../components/SpotListing";
+import Navbar from "../components/Navbar";
 
 const Home = () => {
   const [showMap, setShowMap] = useState(false);
-  const username = useSelector(state => state.auth.user.username);
+  const username = useSelector((state) => state.auth.user.username);
   const handleSwitchChange = (event) => {
     setShowMap(event.target.checked);
   };
 
   return (
     <>
-      <h1>HOME PAGE</h1>
+      <Navbar />
       <FormControlLabel
         control={<Switch checked={showMap} onChange={handleSwitchChange} />}
         label="Show map"
       />
-      {showMap && <Map username={username}/>}
+      {showMap && <Map username={username} />}
       <NewSpotModal />
       <SpotListing />
     </>

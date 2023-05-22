@@ -28,10 +28,12 @@ export const fetchUserRatings = createAsyncThunk(
   async (username, { rejectWithValue }) => {
     try {
       const response = await axios.get(`/users/${username}/ratings`);
-      const ratings = response.data.map(rating => ({ spotId: rating.spotId, rating: rating.rating }));
+      const ratings = response.data.map((rating) => ({
+        spotId: rating.spotId,
+        rating: rating.rating,
+      }));
       //console.log(ratings);
       return ratings;
-      
     } catch (err) {
       return rejectWithValue(err.response.data);
     }
@@ -40,9 +42,27 @@ export const fetchUserRatings = createAsyncThunk(
 
 export const postUserRating = createAsyncThunk(
   "auth/postUserRating",
-  async ({username, spotId, rating}, { rejectWithValue }) => {
+  async ({ username, spotId, rating }, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`/users/${username}/rating`, {spotId, rating});
+      const response = await axios.post(`/users/${username}/rating`, {
+        spotId,
+        rating,
+      });
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const updateUserData = createAsyncThunk(
+  "auth/updateUserData",
+  async ({ username, name, profilePicture }, { rejectWithValue }) => {
+    try {
+      const response = await axios.put(`/users/${username}`, {
+        name,
+        profilePicture,
+      });
       return response.data;
     } catch (err) {
       return rejectWithValue(err.response.data);
@@ -53,6 +73,10 @@ export const postUserRating = createAsyncThunk(
 const initialState = {
   user: {
     username: "",
+    name: "",
+    role: "",
+    profilePicture: "",
+    registrationDate: "",
     favorites: [],
     ratings: [],
   },
@@ -67,8 +91,16 @@ export const authSlice = createSlice({
       state.isLoggedIn = true;
       console.log(action.payload.user.username);
       state.user.username = action.payload.user.username;
+      state.user.name = action.payload.name;
+      state.user.role = action.payload.role;
+      state.user.registrationDate = new Date(
+        action.payload.registrationDate
+      ).toLocaleDateString("en-GB");
+      console.log(state.user.name);
       console.log(action.payload.user.username);
+      state.user.profilePicture = action.payload.profilePicture;
       state.user.favorites = action.payload.favorites;
+      console.log(state.user.registrationDate);
       console.log(action.payload.favorites);
       state.user.ratings = action.payload.ratings;
       console.log(action.payload.ratings);
@@ -77,7 +109,12 @@ export const authSlice = createSlice({
     logout: (state) => {
       state.isLoggedIn = false;
       state.user.username = "";
+      state.user.name = "";
+      state.user.role = "";
+      state.user.profilePicture = "";
+      state.user.registrationDate = "";
       state.user.favorites = [];
+      state.user.ratings = [];
     },
     addFavoriteSpot: (state, action) => {
       console.log(state);
@@ -85,13 +122,6 @@ export const authSlice = createSlice({
       console.log(state.user);
       console.log(action.payload);
       state.user.favorites.push(action.payload);
-      // if (action.payload) {
-      //   console.log(action.payload);
-
-      //   console.log(state.user);
-      // } else {
-      //   console.error("Payload is not an array");
-      // }
     },
     removeFavoriteSpot: (state, action) => {
       console.log(action.payload);
@@ -110,12 +140,22 @@ export const authSlice = createSlice({
         state.user.ratings = action.payload;
       })
       .addCase(postUserRating.fulfilled, (state, action) => {
-        const ratingObject = state.user.ratings.find(rating => rating.spotId === action.payload.spotId);
+        const ratingObject = state.user.ratings.find(
+          (rating) => rating.spotId === action.payload.spotId
+        );
         if (ratingObject) {
           ratingObject.rating = action.payload.rating;
         } else {
           state.user.ratings.push(action.payload);
         }
+      })
+      .addCase(updateUserData.fulfilled, (state, action) => {
+        console.log(action.payload.user);
+        console.log(action.payload.user.profilePicture);
+        console.log(action.payload.profilePicture);
+        state.user.name = action.payload.user.name;
+        state.user.profilePicture = action.payload.user.profilePicture;
+        console.log(state.user);
       });
   },
 });

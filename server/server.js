@@ -15,7 +15,7 @@ const Comment = require("./models/Comment");
 //const User = require("./models/User");
 const findOrCreate = require("mongoose-findorcreate");
 const passportLocalMongoose = require("passport-local-mongoose");
-const axios = require('axios');
+const axios = require("axios");
 require("dotenv/config");
 
 const app = express();
@@ -51,23 +51,29 @@ const connectToMongoose = async () => {
 };
 connectToMongoose();
 
-const userSchema = new mongoose.Schema({
-  // _id
-  username: { type: String, unique: true, required: true },
-  favorites: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Spot",
-    },
-  ],
-  ratings: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Rating",
-    },
-  ],
-  //GoogleId: String,
-});
+const userSchema = new mongoose.Schema(
+  {
+    // _id
+    username: { type: String, unique: true, required: true },
+    profilePicture: { type: Number, default: 0 },
+    name: { type: String, required: true },
+    role: { type: String, default: "regular" },
+    favorites: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Spot",
+      },
+    ],
+    ratings: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Rating",
+      },
+    ],
+    //GoogleId: String,
+  },
+  { timestamps: true }
+);
 
 userSchema.plugin(findOrCreate);
 userSchema.plugin(passportLocalMongoose);
@@ -96,6 +102,29 @@ const authenticateJWT = (req, res, next) => {
   });
 };
 
+const authorizeAdmin = (req, res, next) => {
+  const token = req.cookies.token;
+
+  if (!token) {
+    return res.status(401).send({ message: "Unauthorized" });
+  }
+
+  jwt.verify(token, process.env.SECRETJWT, (err, decoded) => {
+    if (err) {
+      return res.status(401).send({ message: "Unauthorized" });
+    }
+
+    // Check if the user is an admin
+    if (decoded.role !== "admin") {
+      return res.status(403).send({ message: "Forbidden" });
+    }
+
+    req.user = decoded;
+    //console.log(decoded);
+    next();
+  });
+};
+
 app.get("/login", authenticateJWT, (req, res) => {
   res.status(200).send({
     message: "User is still logged in ",
@@ -103,49 +132,6 @@ app.get("/login", authenticateJWT, (req, res) => {
     loggedIn: true,
   });
 });
-
-// app.post("/login", (req, res) => {
-//   const user = new User({
-//     username: req.body.username,
-//     password: req.body.password,
-//   });
-
-//   req.login(user, function (err) {
-//     console.log(user)
-//     if (err) {
-//       console.log(err);
-//       res.status(400).send({
-//         success: false,
-//         message: "Failed to login user. Error " + err,
-//       });
-//     } else {
-//       passport.authenticate("local")(req, res, function () {
-//         const token = jwt.sign(
-//           { userId: user._id.toString(), username: user.username },
-//           process.env.SECRETJWT,
-//           { expiresIn: "4h" }
-//         );
-//         const time = 60 * 60 * 4 * 1000; //4 hours in milliseconds
-//         const expirationDate = new Date(Date.now() + time);
-
-//         res.cookie("token", token, {
-//           httpOnly: true,
-//           sameSite: "strict",
-//           expires: expirationDate,
-//         });
-//         res.status(200).send({
-//           success: true,
-//           message: "Authentication successful",
-//           token: token,
-//           user: { userId: user._id.toString(), username: user.username },
-//         });
-//         console.log("before " + user);
-//         req.session.user = { userId: user._id.toString(), username: user.username };
-//         console.log("after " +req.session.user);
-//       });
-//     }
-//   });
-// });
 
 app.post("/login", async (req, res, next) => {
   const { username, password } = req.body;
@@ -183,7 +169,7 @@ app.post("/login", async (req, res, next) => {
 
       passport.authenticate("local")(req, res, function () {
         const token = jwt.sign(
-          { userId: user._id, username: user.username },
+          { userId: user._id, username: user.username, role: user.role },
           process.env.SECRETJWT,
           { expiresIn: "4h" }
         );
@@ -199,11 +185,17 @@ app.post("/login", async (req, res, next) => {
           success: true,
           message: "Authentication successful",
           token: token,
-          user: { userId: user._id, username: user.username },
+          user: {
+            userId: user._id,
+            username: user.username,
+            name: user.name,
+            role: user.role,
+          },
         });
         req.session.user = {
           userId: user._id.toString(),
           username: user.username,
+          role: user.role,
         };
       });
     });
@@ -213,9 +205,27 @@ app.post("/login", async (req, res, next) => {
   }
 });
 
+app.post("/logout", (req, res) => {
+  try {
+    // clear the session data
+    req.session = null;
+
+    // clear the cookie holding the jwt
+    res.clearCookie("token");
+
+    // send a success message
+    res.send({ message: "Logout successful" });
+  } catch (error) {
+    console.error("Logout error", error);
+    res
+      .status(500)
+      .json({ message: "Error while logging out. Please try again." });
+  }
+});
+
 app.post("/register", (req, res) => {
-  const { username, password } = req.body;
-  User.register(new User({ username }), password, (err, user) => {
+  const { username, password, name } = req.body;
+  User.register(new User({ username, name }), password, (err, user) => {
     if (err) {
       console.log(err);
       res.status(400).send({
@@ -271,6 +281,26 @@ app.get("/spots/:id", async (req, res) => {
   }
 });
 
+app.put("/spots/:id", authenticateJWT, authorizeAdmin, async (req, res) => {
+  const spotId = req.params.id;
+  const updatedSpot = req.body;
+  console.log(req.body);
+  try {
+    const spot = await Spot.findByIdAndUpdate(spotId, updatedSpot, {
+      new: true,
+    });
+
+    if (!spot) {
+      return res.status(404).send({ message: "Spot not found" });
+    }
+
+    res.send(spot);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ message: "Error updating spot" });
+  }
+});
+
 app.post("/spots/:id/rating", async (req, res) => {
   const { id } = req.params;
   const { rating } = req.body;
@@ -293,6 +323,16 @@ app.post("/spots/:id/rating", async (req, res) => {
   }
 });
 
+app.get("/users", async (req, res) => {
+  try {
+    const users = await User.find({});
+    res.send(users);
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res.status(500).send({ message: "Error fetching users" });
+  }
+});
+
 app.get("/users/:username", async (req, res) => {
   try {
     const username = req.params.username;
@@ -303,6 +343,67 @@ app.get("/users/:username", async (req, res) => {
     res.send(user);
   } catch (err) {
     res.status(500).send({ message: "Server error" });
+  }
+});
+
+app.put("/users/:username", authenticateJWT, async (req, res) => {
+  const { username } = req.params;
+  const { name, profilePicture } = req.body;
+
+  if (req.user.username !== username) {
+    return res.status(403).json({ message: "Unauthorized action" }); // the token's username does not match the request username
+  }
+
+  try {
+    const user = await User.findOne({ username });
+
+    if (!user) {
+      return res.status(404).send({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    if (name) user.name = name;
+    if (profilePicture !== undefined) user.profilePicture = profilePicture;
+
+    await user.save();
+
+    res.status(200).send({
+      success: true,
+      message: "User updated successfully",
+      user: {
+        username: user.username,
+        name: user.name,
+        profilePicture: user.profilePicture,
+      },
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+app.delete("/users/:username", authenticateJWT, async (req, res) => {
+  const { username } = req.params;
+  try {
+    // Check if the user is an admin
+    if (req.user.role !== "admin") {
+      return res.status(403).send({ message: "Forbidden" });
+    }
+
+    const user = await User.findOne({ username: username });
+    if (!user) {
+      return res.status(404).send({ message: "User not found" });
+    }
+    // Delete any comments made by the user
+    await Comment.deleteMany({ username: username });
+
+    await User.deleteOne({ username: username });
+    res.send({ message: "User deleted successfully" });
+  } catch (error) { 
+    console.error("Error deleting user:", error);
+    res.status(500).send({ message: "Error deleting user" });
   }
 });
 
@@ -501,7 +602,7 @@ app.put("/comments/:commentId", async (req, res) => {
   }
 });
 
-app.delete("/comments/:commentId", async (req, res) => {
+app.delete("/comments/:commentId", authenticateJWT, async (req, res) => {
   const { commentId } = req.params;
   try {
     // Verify the comment exists and belongs to the user
@@ -512,7 +613,7 @@ app.delete("/comments/:commentId", async (req, res) => {
 
     // (Optional) Verify the logged-in user owns the comment
     // This requires some kind of authentication middleware that puts the user's info into req.user
-    if (req.user.username !== comment.username) {
+    if (req.user.username !== comment.username && req.user.role !== "admin") {
       return res
         .status(403)
         .json({ message: "Not authorized to delete this comment" });
@@ -543,22 +644,40 @@ app.get("/spots/:id/weather", async (req, res) => {
       res.send(weatherResponse.data);
     } catch (axiosError) {
       console.error(axiosError);
-      res
-        .status(500)
-        .json({
-          message: "Error fetching weather data from OpenWeatherMap",
-          error: axiosError.message,
-        });
+      res.status(500).json({
+        message: "Error fetching weather data from OpenWeatherMap",
+        error: axiosError.message,
+      });
     }
   } catch (mongoError) {
     console.error(mongoError);
-    res
-      .status(500)
-      .json({
-        message: "Error fetching spot from MongoDB",
-        error: mongoError.message,
-      });
+    res.status(500).json({
+      message: "Error fetching spot from MongoDB",
+      error: mongoError.message,
+    });
   }
+});
+
+app.get(
+  "/admin/spots/:id",
+  authenticateJWT,
+  authorizeAdmin,
+  async (req, res) => {
+    try {
+      const spot = await Spot.findById(req.params.id);
+      if (!spot) {
+        return res.status(404).send({ message: "Spot not found" });
+      }
+      res.send(spot);
+    } catch (err) {
+      res.status(500).send({ message: "Server error" });
+    }
+  }
+);
+
+app.get("/admin/spots", authenticateJWT, authorizeAdmin, async (req, res) => {
+  const spots = await Spot.find({});
+  res.send(spots);
 });
 
 app.listen(port, () => {

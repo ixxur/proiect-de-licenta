@@ -9,13 +9,20 @@ import Start from "./pages/Start";
 import Home from "./pages/Home";
 import SpotDetailsPage from "./pages/SpotDetailsPage";
 import ProtectedRoutes from "./utils/ProtectedRoutes";
+import ProtectedAdminRoutes from "./utils/ProtectedAdminRoutes";
 import { useDispatch, useSelector } from "react-redux";
 import { loginSuccess } from "./store/authSlice";
+import Profile from "./pages/Profile";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminSpotsList from "./pages/admin/AdminSpotsList";
+import AdminUsersList from "./pages/admin/AdminUsersList";
+import SpotDetailsEditPage from "./pages/admin/SpotDetailsEditPage";
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch();
-  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const { isLoggedIn } = useSelector((state) => state.auth);
+  const { role } = useSelector((state) => state.auth.user);
 
   useEffect(() => {
     const checkLoginStatus = async () => {
@@ -28,17 +35,35 @@ function App() {
         const favoritesResponse = await axios.get(`/users/${user.username}`);
         console.log(favoritesResponse);
         console.log(favoritesResponse.data.favorites);
-        
+        const name = favoritesResponse.data.name;
+        const role = favoritesResponse.data.role;
+        const profilePicture = favoritesResponse.data.profilePicture;
+        const registrationDate = favoritesResponse.data.createdAt;
         //const favorites = favoritesRes.data || [];
         const favorites = favoritesResponse.data.favorites || [];
-        const ratingsResponse = await axios.get(`/users/${user.username}/ratings`);
-        const ratings = ratingsResponse.data.map(rating => ({ spotId: rating.spotId, rating: rating.rating }));
+        const ratingsResponse = await axios.get(
+          `/users/${user.username}/ratings`
+        );
+        const ratings = ratingsResponse.data.map((rating) => ({
+          spotId: rating.spotId,
+          rating: rating.rating,
+        }));
         //const ratings = data.data.ratings || [];
         console.log(ratings);
         console.log(favorites);
         console.log(user);
         console.log(response.data);
-        dispatch(loginSuccess({user, favorites, ratings}));
+        dispatch(
+          loginSuccess({
+            user,
+            name,
+            role,
+            favorites,
+            ratings,
+            profilePicture,
+            registrationDate,
+          })
+        );
       } catch (error) {
         console.log(error);
       } finally {
@@ -69,7 +94,27 @@ function App() {
             }
           >
             <Route path="/home" element={<Home />} />
+            <Route path="/profile" element={<Profile />} />
             <Route path="/spot/:id" element={<SpotDetailsPage />} />
+          </Route>
+          <Route
+            path="/admin"
+            element={
+              isLoggedIn && role === "admin" ? (
+                <ProtectedAdminRoutes />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          >
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route path="/admin/spots" element={<AdminSpotsList />} />
+            <Route path="/admin/spot/:id" element={<SpotDetailsPage />} />
+            <Route
+              path="/admin/spot/:id/edit"
+              element={<SpotDetailsEditPage />}
+            />
+            <Route path="/admin/users" element={<AdminUsersList />} />
           </Route>
           <Route path="*" element={<Navigate to="/login" />} />
         </Routes>

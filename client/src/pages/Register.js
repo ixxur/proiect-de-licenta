@@ -5,6 +5,7 @@ import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 
 const Register = () => {
+  const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
@@ -17,6 +18,7 @@ const Register = () => {
       const response = await axios.post("/register", {
         username: username,
         password: password,
+        name: name,
       });
 
       console.log(response.data);
@@ -28,39 +30,49 @@ const Register = () => {
 
   return (
     <Card>
-        <h1>Registration Page</h1>
-        <form className={classes.form} onSubmit={register}>
-          <input
-            id="emailReg"
-            type="email"
-            placeholder="Email"
-            onChange={(event) => {
-              setUsername(event.target.value);
-            }}
-          />
-          <input
-            id="passwordReg"
-            type="password"
-            placeholder="Password"
-            onChange={(event) => {
-              setPassword(event.target.value);
-            }}
-          />
-          <input
-            id="passwordConfirm"
-            type="password"
-            placeholder="Confirm password"
-            onChange={(event) => {
-              setPasswordConfirmation(event.target.value);
-            }}
-          />
-          {password === passwordConfirmation ? (
-            <button type="submit">Register</button>
-          ) : (
-            <p>The password doesn't match.</p>
-          )}
-        </form>
-        <p>Already have an account? <Link to="/login">Login!</Link></p>
+      <h1>Inregistreaza un cont</h1>
+      <form className={classes.form} onSubmit={register}>
+      <input
+          id="nameReg"
+          type="text"
+          placeholder="Nume"
+          onChange={(event) => {
+            setName(event.target.value);
+          }}
+        />
+        <input
+          id="emailReg"
+          type="email"
+          placeholder="Email"
+          onChange={(event) => {
+            setUsername(event.target.value);
+          }}
+        />
+        <input
+          id="passwordReg"
+          type="password"
+          placeholder="Parola"
+          onChange={(event) => {
+            setPassword(event.target.value);
+          }}
+        />
+        <input
+          id="passwordConfirm"
+          type="password"
+          placeholder="Confirma parola"
+          onChange={(event) => {
+            setPasswordConfirmation(event.target.value);
+          }}
+        />
+        {password === passwordConfirmation ? (
+          <button type="submit">Inregistrare</button>
+        ) : (
+          <p>Parolele nu sunt la fel.</p>
+        )}
+      </form>
+      <p>
+        Ai deja un cont? <Link to="/login">Conecteaza-te!</Link>
+      </p>
     </Card>
   );
 };

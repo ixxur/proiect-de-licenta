@@ -41,8 +41,7 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.form input[type="email"],
-.form input[type="password"] {
+.form input {
   width: 100%;
   padding: 10px;
   margin-bottom: 20px;

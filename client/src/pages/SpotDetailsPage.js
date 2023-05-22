@@ -5,6 +5,7 @@ import Comments from "../components/Comments";
 import { useDispatch, useSelector } from "react-redux";
 import Rating from "@mui/material/Rating";
 import { postUserRating } from "../store/authSlice";
+import Navbar from "../components/Navbar";
 
 const SpotDetailsPage = () => {
   const dispatch = useDispatch();
@@ -41,6 +42,7 @@ const SpotDetailsPage = () => {
             minTemp: day.temp.min - 273.15, // Convert to Celsius
             maxTemp: day.temp.max - 273.15, // Convert to Celsius
             icon: day.weather[0].icon,
+            description: day.weather[0].description,
           }));
         setWeatherData(fiveDaysWeather);
       } catch (weatherError) {
@@ -80,6 +82,7 @@ const SpotDetailsPage = () => {
 
   return (
     <>
+      <Navbar />
       <div>
         <h1>{name}</h1>
         <img src={imageUrl} alt={name} />
@@ -103,6 +106,7 @@ const SpotDetailsPage = () => {
               alt="Weather icon"
               style={{ width: "70px", height: "70px" }}
             />
+            <p>{day.description}</p>
           </div>
         ))}
       </div>
