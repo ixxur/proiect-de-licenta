@@ -23,6 +23,28 @@ export const toggleFavoriteSpot = createAsyncThunk(
   }
 );
 
+export const toggleVisitedSpot = createAsyncThunk(
+  "auth/toggleVisitedSpot",
+  async (spotId, { getState, dispatch }) => {
+    console.log(spotId);
+    const { username, visited } = getState().auth.user;
+    console.log(getState().auth.user);
+    try {
+      if (visited.includes(spotId)) {
+        await axios.delete(`/users/${username}/visited`, {
+          data: { spotId },
+        });
+        dispatch(authSlice.actions.removeVisitedSpot(spotId));
+      } else {
+        await axios.post(`/users/${username}/visited`, { spotId });
+        dispatch(authSlice.actions.addVisitedSpot(spotId));
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+);
+
 export const fetchUserRatings = createAsyncThunk(
   "auth/fetchUserRatings",
   async (username, { rejectWithValue }) => {
@@ -78,6 +100,7 @@ const initialState = {
     profilePicture: "",
     registrationDate: "",
     favorites: [],
+    visited: [],
     ratings: [],
   },
   isLoggedIn: false,
@@ -89,7 +112,6 @@ export const authSlice = createSlice({
   reducers: {
     loginSuccess: (state, action) => {
       state.isLoggedIn = true;
-      console.log(action.payload.user.username);
       state.user.username = action.payload.user.username;
       state.user.name = action.payload.name;
       state.user.role = action.payload.role;
@@ -100,6 +122,7 @@ export const authSlice = createSlice({
       console.log(action.payload.user.username);
       state.user.profilePicture = action.payload.profilePicture;
       state.user.favorites = action.payload.favorites;
+      state.user.visited = action.payload.visited;
       console.log(state.user.registrationDate);
       console.log(action.payload.favorites);
       state.user.ratings = action.payload.ratings;
@@ -114,6 +137,7 @@ export const authSlice = createSlice({
       state.user.profilePicture = "";
       state.user.registrationDate = "";
       state.user.favorites = [];
+      state.user.visited = [];
       state.user.ratings = [];
     },
     addFavoriteSpot: (state, action) => {
@@ -132,10 +156,27 @@ export const authSlice = createSlice({
       state.user.favorites = newFavorites;
       console.log(state.user.favorites);
     },
+    addVisitedSpot: (state, action) => {
+      console.log(state);
+      console.log("======================");
+      console.log(state.user);
+      console.log(action.payload);
+      state.user.visited.push(action.payload);
+    },
+    removeVisiteSpot: (state, action) => {
+      console.log(action.payload);
+      const newVisited = state.user.visited.filter(
+        (spotId) => spotId !== action.payload
+      );
+      console.log(newVisited);
+      state.user.visited = newVisited;
+      console.log(state.user.visited);
+    },
   },
   extraReducers: (builder) => {
     builder
       .addCase(toggleFavoriteSpot.fulfilled, (state, action) => {})
+      .addCase(toggleVisitedSpot.fulfilled, (state, action) => {})
       .addCase(fetchUserRatings.fulfilled, (state, action) => {
         state.user.ratings = action.payload;
       })
@@ -160,7 +201,6 @@ export const authSlice = createSlice({
   },
 });
 
-export const { loginSuccess, logout, addFavoriteSpot, removeFavoriteSpot } =
+export const { loginSuccess, logout, addFavoriteSpot, removeFavoriteSpot, addVisitedSpot, removeVisitedSpot } =
   authSlice.actions;
-// export { toggleFavoriteSpot };
 export default authSlice.reducer;

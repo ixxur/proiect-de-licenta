@@ -26,9 +26,12 @@ function App() {
 
   useEffect(() => {
     const checkLoginStatus = async () => {
+      console.log("useEffect app 1");
       try {
         const response = await axios.get("/login", { withCredentials: true });
+        console.log("useEffect app 2");
         const { user } = response.data;
+        console.log(response);
         // const favoritesRes = await axios.get(
         //   `/users/${user.username}/favorites`
         // );
@@ -41,6 +44,7 @@ function App() {
         const registrationDate = favoritesResponse.data.createdAt;
         //const favorites = favoritesRes.data || [];
         const favorites = favoritesResponse.data.favorites || [];
+        const visited = favoritesResponse.data.visited || [];
         const ratingsResponse = await axios.get(
           `/users/${user.username}/ratings`
         );
@@ -59,7 +63,8 @@ function App() {
             name,
             role,
             favorites,
-            ratings,
+            visited,
+            ratings, 
             profilePicture,
             registrationDate,
           })

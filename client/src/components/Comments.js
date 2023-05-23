@@ -4,8 +4,7 @@ import { List, ListItem, ListItemText } from "@mui/material";
 import CommentForm from "./CommentForm";
 import Comment from "./Comment";
 
-
-const  Comments = ({ spotId, username }) => {
+const Comments = ({ spotId, username }) => {
   const [comments, setComments] = useState([]);
 
   const refreshComments = async () => {
@@ -21,6 +20,7 @@ const  Comments = ({ spotId, username }) => {
   return (
     <div>
       <h3>Comentarii: </h3>
+      {comments.length === 0 && <h4>Inca nu sunt comentarii.</h4>}
       <List>
         {comments.map((comment) => (
           <Comment
@@ -38,6 +38,6 @@ const  Comments = ({ spotId, username }) => {
       />
     </div>
   );
-}
+};
 
 export default Comments;

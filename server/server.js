@@ -15,6 +15,7 @@ const Comment = require("./models/Comment");
 //const User = require("./models/User");
 const findOrCreate = require("mongoose-findorcreate");
 const passportLocalMongoose = require("passport-local-mongoose");
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const axios = require("axios");
 require("dotenv/config");
 
@@ -64,13 +65,19 @@ const userSchema = new mongoose.Schema(
         ref: "Spot",
       },
     ],
+    visited: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Spot",
+      },
+    ],
     ratings: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Rating",
       },
     ],
-    //GoogleId: String,
+    googleId: String,
   },
   { timestamps: true }
 );
@@ -84,6 +91,35 @@ passport.use(User.createStrategy());
 
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
+
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: "/auth/google/callback",
+      scope: ["profile", "email"],
+    },
+    async (accessToken, refreshToken, profile, cb) => {
+      try {
+        let user = await User.findOne({ googleId: profile.id });
+        console.log(profile);
+        if (!user) {
+          user = new User({
+            googleId: profile.id,
+            username: profile.emails[0].value,
+            name: profile.displayName,
+          });
+          console.log(user);
+          await user.save();
+        }
+        cb(null, user);
+      } catch (err) {
+        cb(err, null);
+      }
+    }
+  )
+);
 
 const authenticateJWT = (req, res, next) => {
   const token = req.cookies.token;
@@ -124,6 +160,52 @@ const authorizeAdmin = (req, res, next) => {
     next();
   });
 };
+
+app.get("/auth/google", passport.authenticate("google", ["profile", "email"]));
+
+app.get(
+  "/auth/google/callback",
+  passport.authenticate("google", {
+    failureRedirect: "/login",
+  }),
+  async (req, res) => {
+    // User has been authenticated and logged in.
+    // Now, generate a JWT and respond with it.
+    try {
+      const token = jwt.sign(
+        {
+          userId: req.user._id,
+          username: req.user.username,
+          role: req.user.role,
+        },
+        process.env.SECRETJWT
+      );
+      const time = 60 * 60 * 4 * 1000; //4 hours in milliseconds
+      const expirationDate = new Date(Date.now() + time);
+      res.cookie("token", token, {
+        httpOnly: true,
+        sameSite: "strict",
+        expires: expirationDate,
+      });
+      res.redirect("http://localhost:3000/home");
+    } catch (err) {
+      console.log(err);
+      return res.status(400).send({
+        success: false,
+        message: "Failed to login user. Error " + err,
+      });
+    }
+  }
+);
+
+// app.get("/auth/user", authenticateJWT, async (req, res) => {
+//   try {
+//     res.send(req.user);
+//   } catch (err) {
+//     console.log(err);
+//     res.status(500).send({ message: "Error fetching user data" });
+//   }
+// });
 
 app.get("/login", authenticateJWT, (req, res) => {
   res.status(200).send({
@@ -401,7 +483,7 @@ app.delete("/users/:username", authenticateJWT, async (req, res) => {
 
     await User.deleteOne({ username: username });
     res.send({ message: "User deleted successfully" });
-  } catch (error) { 
+  } catch (error) {
     console.error("Error deleting user:", error);
     res.status(500).send({ message: "Error deleting user" });
   }
@@ -455,6 +537,48 @@ app.delete("/users/:username/favorites", async (req, res) => {
     if (index !== -1) {
       user.favorites.splice(index, 1);
       console.log("favorite " + user.favorites);
+      await user.save();
+    }
+    res.send(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ message: "Server error" });
+  }
+});
+
+app.post("/users/:username/visited", async (req, res) => {
+  try {
+    const { spotId } = req.body;
+    const username = req.params.username;
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(404).send({ message: "User not found" });
+    }
+    if (!user.visited.includes(spotId)) {
+      user.visited.push(spotId);
+      await user.save();
+    }
+    res.send(user);
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+app.delete("/users/:username/visited", async (req, res) => {
+  try {
+    const { spotId } = req.body;
+    console.log("spotId " + spotId);
+    const username = req.params.username;
+    const user = await User.findOne({ username });
+
+    if (!user) {
+      return res.status(404).send({ message: "User not found" });
+    }
+
+    const index = user.visited.indexOf(spotId);
+    if (index !== -1) {
+      user.visited.splice(index, 1);
+      console.log("visited " + user.visited);
       await user.save();
     }
     res.send(user);

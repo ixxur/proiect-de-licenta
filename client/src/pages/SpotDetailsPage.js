@@ -3,9 +3,16 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import Comments from "../components/Comments";
 import { useDispatch, useSelector } from "react-redux";
-import Rating from "@mui/material/Rating";
+import { Rating, Grid, Container, IconButton, Box } from "@mui/material";
 import { postUserRating } from "../store/authSlice";
 import Navbar from "../components/Navbar";
+import {
+  FavoriteBorder,
+  Favorite,
+  WhereToVoteOutlined,
+  WhereToVote,
+} from "@mui/icons-material";
+import { toggleFavoriteSpot, toggleVisitedSpot } from "../store/authSlice";
 
 const SpotDetailsPage = () => {
   const dispatch = useDispatch();
@@ -21,6 +28,9 @@ const SpotDetailsPage = () => {
   const [userRating, setUserRating] = useState(
     userRatingObject ? userRatingObject.rating : null
   );
+
+  const isFav = user.favorites.includes(id);
+  const isVisited = user.visited.includes(id);
 
   useEffect(() => {
     const fetchSpotandWeather = async () => {
@@ -80,39 +90,80 @@ const SpotDetailsPage = () => {
     }
   };
 
+  const handleToggleFavorite = () => {
+    dispatch(toggleFavoriteSpot(spot._id));
+  };
+
+  const handleToggleVisited = () => {
+    dispatch(toggleVisitedSpot(spot._id));
+  };
+
   return (
     <>
       <Navbar />
-      <div>
-        <h1>{name}</h1>
-        <img src={imageUrl} alt={name} />
-        <Rating
-          name="user-rating"
-          value={userRating}
-          precision={0.5}
-          onChange={handleRatingChange}
-        />
-        <p>Rating: {averageRating}</p>
-        <p>{description}</p>
-        <p>Best time to visit: {whenToGo}</p>
-        <h3>Vremea in {spot.name} pentru urmatoarele 5 zile: </h3>
-        {weatherData.map((day, index) => (
-          <div key={index}>
-            <p> {day.date}</p>
-            <p>Min Temp: {day.minTemp.toFixed(2)}°C</p>
-            <p>Max Temp: {day.maxTemp.toFixed(2)}°C</p>
-            <img
-              src={`http://openweathermap.org/img/w/${day.icon}.png`}
-              alt="Weather icon"
-              style={{ width: "70px", height: "70px" }}
-            />
-            <p>{day.description}</p>
-          </div>
-        ))}
-      </div>
-      <div>
-        <Comments spotId={id} username={user.username} />
-      </div>
+      <Container>
+        <Box sx={{ flexGrow: 1, marginTop: 2, marginBottom: 2 }}>
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
+              <img
+                src={imageUrl}
+                alt={name}
+                style={{ width: "100%", height: "auto" }}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <h1>{name}</h1>
+            </Grid>
+            <Grid item xs={12}>
+              <Rating
+                name="user-rating"
+                value={userRating}
+                precision={0.5}
+                onChange={handleRatingChange}
+              />
+              <p>Rating: {averageRating}</p>
+            </Grid>
+            <Grid item xs={12}>
+              <Grid container spacing={2}>
+                <IconButton onClick={handleToggleFavorite}>
+                  {isFav ? <Favorite /> : <FavoriteBorder />}
+                </IconButton>
+                <IconButton onClick={handleToggleVisited}>
+                  {isVisited ? <WhereToVote /> : <WhereToVoteOutlined />}
+                </IconButton>
+              </Grid>
+            </Grid>
+            <Grid item xs={12}>
+              <p>{description}</p>
+            </Grid>
+            <Grid item xs={12}>
+              <h3>Perioada cea mai buna de vizitat: </h3>
+              <p>{whenToGo}</p>
+            </Grid>
+            <Grid item xs={12}>
+              <h3>Vremea in {spot.name} pentru urmatoarele 5 zile: </h3>
+              <Grid container spacing={2}>
+                {weatherData.map((day, index) => (
+                  <Grid item xs={12} sm={4} md={2} key={index}>
+                    <p> {day.date}</p>
+                    <p>Min Temp: {day.minTemp.toFixed(2)}°C</p>
+                    <p>Max Temp: {day.maxTemp.toFixed(2)}°C</p>
+                    <img
+                      src={`http://openweathermap.org/img/w/${day.icon}.png`}
+                      alt="Weather icon"
+                      style={{ width: "70px", height: "70px" }}
+                    />
+                    <p>{day.description}</p>
+                  </Grid>
+                ))}
+              </Grid>
+            </Grid>
+            <Grid item xs={12}>
+              <Comments spotId={id} username={user.username} />
+            </Grid>
+          </Grid>
+        </Box>
+      </Container>
     </>
   );
 };

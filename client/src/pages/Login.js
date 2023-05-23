@@ -19,12 +19,15 @@ const Login = () => {
 
   const login = async (event) => {
     event.preventDefault();
-
+    console.log("login1");
     try {
       const response = await axios.post("/login", {
         username: username,
         password: password,
       });
+      console.log("login2");
+      const responseGet = await axios.get("/login", { withCredentials: true });
+      console.log(responseGet.data);
       const { user } = response.data;
       console.log(user);
       const favoritesResponse = await axios.get(`/users/${user.username}`);
@@ -36,10 +39,27 @@ const Login = () => {
       const profilePicture = favoritesResponse.data.profilePicture;
       const registrationDate = favoritesResponse.data.createdAt;
       const favorites = favoritesResponse.data.favorites || [];
-      const ratingsResponse = await axios.get(`/users/${user.username}/ratings`);
-      const ratings = ratingsResponse.data.map(rating => ({ spotId: rating.spotId, rating: rating.rating }));
+      const visited = favoritesResponse.data.visited || [];
+      const ratingsResponse = await axios.get(
+        `/users/${user.username}/ratings`
+      );
+      const ratings = ratingsResponse.data.map((rating) => ({
+        spotId: rating.spotId,
+        rating: rating.rating,
+      }));
       //const ratings = data.data.ratings || [];
-      dispatch(loginSuccess({ user, name, role, favorites, ratings, profilePicture, registrationDate }));
+      dispatch(
+        loginSuccess({
+          user,
+          name,
+          role,
+          favorites,
+          visited,
+          ratings,
+          profilePicture,
+          registrationDate,
+        })
+      );
       console.log(user);
       navigate("/home");
     } catch (error) {
@@ -48,9 +68,13 @@ const Login = () => {
   };
 
   useEffect(() => {
+    console.log("useEffect login 1");
     const checkLoginStatus = async () => {
       try {
+        console.log("useEffect login 2");
         const response = await axios.get("/login");
+        console.log("useEffect login 3");
+        console.log(response);
         const { user } = response.data;
         dispatch(loginSuccess(user));
         // setLoginStatus(user.username);
@@ -63,6 +87,10 @@ const Login = () => {
 
     checkLoginStatus();
   }, [dispatch, navigate]);
+
+  const googleAuthHandler = () => {
+    window.open("http://localhost:5000/auth/google/callback", "_self");
+  };
 
   return (
     <Card>
@@ -86,6 +114,7 @@ const Login = () => {
         />
         <button type="submit">Login</button>
       </form>
+      <button onClick={googleAuthHandler}>Sign in with Google</button>
       <p>
         Don't have an account? <Link to="/register">Sign up!</Link>
       </p>
