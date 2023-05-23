@@ -1,10 +1,25 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Table, Button, Checkbox, TableSortLabel, Snackbar, Alert, Dialog,
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle, } from "@mui/material";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TableSortLabel,
+  TablePagination,
+  Paper,
+  Button,
+  Checkbox,
+  Snackbar,
+  Alert,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
 import Navbar from "../../components/Navbar";
 
 const AdminUsersList = () => {
@@ -17,9 +32,11 @@ const AdminUsersList = () => {
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const handleSnackbarClose = (event, reason) => {
-    if (reason === 'clickaway') {
+    if (reason === "clickaway") {
       return;
     }
 
@@ -51,9 +68,9 @@ const AdminUsersList = () => {
 
   const handleDeleteConfirmed = async () => {
     if (Array.isArray(userToDelete)) {
-    // if (userToDelete.length > 1 ) {
+      // if (userToDelete.length > 1 ) {
       // if array (multiple users to delete)
-      await Promise.all(userToDelete.map(username => handleDelete(username)));
+      await Promise.all(userToDelete.map((username) => handleDelete(username)));
       setUsers(users.filter((user) => !userToDelete.includes(user.username)));
       setSelectedUsers([]);
     } else {
@@ -77,21 +94,6 @@ const AdminUsersList = () => {
         : [...prevSelectedUsers, username]
     );
   };
-
-//   const handleDeleteSelectedUsers = async () => {
-//     openDialog();
-//     // Wait for all delete requests to complete
-//     await Promise.all(selectedUsers.map((username) => handleDelete(username)));
-  
-//     // Remove deleted users from state
-//     setUsers(users.filter((user) => !selectedUsers.includes(user.username)));
-  
-//     setSelectedUsers([]);
-//   };
-
-//   const openDialog = () => {
-//     setDialogOpen(true);
-//   };
 
   const handleSort = (key) => {
     setSortKey(key);
@@ -120,103 +122,131 @@ const AdminUsersList = () => {
     return sortedUsers;
   };
 
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
   return (
     <>
-      <Navbar /> <h1>Users List</h1>
-      <Table>
-        <thead>
-          <tr>
-            <th></th>
-            <th>
-              <TableSortLabel
-                active={sortKey === "name"}
-                direction={sortOrder}
-                onClick={() => handleSort("name")}
-              >
-                Name
-              </TableSortLabel>
-            </th>
-            <th>
-              <TableSortLabel
-                active={sortKey === "username"}
-                direction={sortOrder}
-                onClick={() => handleSort("username")}
-              >
-                Username
-              </TableSortLabel>
-            </th>
-            <th>
-              <TableSortLabel
-                active={sortKey === "role"}
-                direction={sortOrder}
-                onClick={() => handleSort("role")}
-              >
-                Role
-              </TableSortLabel>
-            </th>
-            <th>
-              <TableSortLabel
-                active={sortKey === "createdAt"}
-                direction={sortOrder}
-                onClick={() => handleSort("createdAt")}
-              >
-                Registration Date
-              </TableSortLabel>
-            </th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user) => (
-            <tr key={user._id}>
-              <td>
-                {user.role !== "admin" && (
-                  <Checkbox
-                    onChange={() => handleSelectUser(user.username)}
-                    checked={selectedUsers.includes(user.username)}
-                  />
-                )}
-              </td>
-              <td>{user.name}</td>
-              <td>{user.username}</td>
-              <td>{user.role}</td>
-              <td>{new Date(user.createdAt).toLocaleDateString("en-GB")}</td>
-              <td>
-                {user.role !== "admin" && (
-                  <Button
-                  variant="contained"
-                  color="secondary"
-                  onClick={() => handleDeletePrompt(user.username)}
+      <Navbar />
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell />
+              <TableCell>
+                <TableSortLabel
+                  active={sortKey === "name"}
+                  direction={sortOrder}
+                  onClick={() => handleSort("name")}
                 >
-                  Delete
-                </Button>
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+                  Name
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={sortKey === "username"}
+                  direction={sortOrder}
+                  onClick={() => handleSort("username")}
+                >
+                  Username
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={sortKey === "role"}
+                  direction={sortOrder}
+                  onClick={() => handleSort("role")}
+                >
+                  Role
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={sortKey === "createdAt"}
+                  direction={sortOrder}
+                  onClick={() => handleSort("createdAt")}
+                >
+                  Registration Date
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>Action</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {users
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((user) => (
+                <TableRow key={user._id}>
+                  <TableCell>
+                    {user.role !== "admin" && (
+                      <Checkbox
+                        onChange={() => handleSelectUser(user.username)}
+                        checked={selectedUsers.includes(user.username)}
+                      />
+                    )}
+                  </TableCell>
+                  <TableCell>{user.name}</TableCell>
+                  <TableCell>{user.username}</TableCell>
+                  <TableCell>{user.role}</TableCell>
+                  <TableCell>
+                    {new Date(user.createdAt).toLocaleDateString("en-GB")}
+                  </TableCell>
+                  <TableCell>
+                    {user.role !== "admin" && (
+                      <Button
+                        variant="outlined"
+                        color="error"
+                        onClick={() => handleDeletePrompt(user.username)}
+                      >
+                        Delete
+                      </Button>
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))}
+          </TableBody>
+        </Table>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={users.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </TableContainer>
       <Button
-        variant="contained"
-        color="secondary"
+        fullWidth
+        type="submit"
+        variant="outlined"
+        color="error"
         onClick={() => handleDeletePrompt(selectedUsers)}
       >
         Delete Selected Users
       </Button>
-      <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+      >
         <Alert onClose={handleSnackbarClose} severity={snackbarSeverity}>
           {snackbarMessage}
         </Alert>
       </Snackbar>
-      <Dialog
-        open={dialogOpen}
-        onClose={() => setDialogOpen(false)}
-      >
+      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
         <DialogTitle>Confirm deletion</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            {Array.isArray(userToDelete) && userToDelete.length > 1 ? "Are you sure you want to delete these users?" : "Are you sure you want to delete this user?"}
-            {/* {userToDelete && userToDelete.length > 1 ? "Are you sure you want to delete these users?" : "Are you sure you want to delete this user?"} */}
+            {Array.isArray(userToDelete) && userToDelete.length > 1
+              ? "Are you sure you want to delete these users?"
+              : "Are you sure you want to delete this user?"}
           </DialogContentText>
         </DialogContent>
         <DialogActions>

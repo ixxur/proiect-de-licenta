@@ -13,10 +13,11 @@ import ProtectedAdminRoutes from "./utils/ProtectedAdminRoutes";
 import { useDispatch, useSelector } from "react-redux";
 import { loginSuccess } from "./store/authSlice";
 import Profile from "./pages/Profile";
-import AdminDashboard from "./pages/admin/AdminDashboard";
+import Roadmap from "./pages/Roadmap";
 import AdminSpotsList from "./pages/admin/AdminSpotsList";
 import AdminUsersList from "./pages/admin/AdminUsersList";
 import SpotDetailsEditPage from "./pages/admin/SpotDetailsEditPage";
+import AddSpotPage from "./pages/admin/AddSpotPage";
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -99,6 +100,7 @@ function App() {
             }
           >
             <Route path="/home" element={<Home />} />
+            <Route path="/roadmap" element={<Roadmap />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/spot/:id" element={<SpotDetailsPage />} />
           </Route>
@@ -112,8 +114,8 @@ function App() {
               )
             }
           >
-            <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/admin/spots" element={<AdminSpotsList />} />
+            <Route path="/admin/spot/add" element={<AddSpotPage />} />
             <Route path="/admin/spot/:id" element={<SpotDetailsPage />} />
             <Route
               path="/admin/spot/:id/edit"

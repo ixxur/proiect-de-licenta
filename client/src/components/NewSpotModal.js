@@ -6,10 +6,6 @@ import Snackbar from "@mui/material/Snackbar";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import { GoogleMap, Marker } from "@react-google-maps/api";
-// import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-// import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-// import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-// import { deDE } from "@mui/x-date-pickers/locales";
 import classes from "./NewSpotModal.module.css";
 
 const containerStyle = {

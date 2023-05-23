@@ -198,15 +198,6 @@ app.get(
   }
 );
 
-// app.get("/auth/user", authenticateJWT, async (req, res) => {
-//   try {
-//     res.send(req.user);
-//   } catch (err) {
-//     console.log(err);
-//     res.status(500).send({ message: "Error fetching user data" });
-//   }
-// });
-
 app.get("/login", authenticateJWT, (req, res) => {
   res.status(200).send({
     message: "User is still logged in ",
@@ -332,7 +323,7 @@ app.get("/spots", async (req, res) => {
   res.send(spots);
 });
 
-app.post("/spot", async (req, res) => {
+app.post("/spot", authorizeAdmin, async (req, res) => {
   try {
     const { name, latitude, longitude, description, whenToGo, imageUrl } =
       req.body;
@@ -492,12 +483,12 @@ app.delete("/users/:username", authenticateJWT, async (req, res) => {
 app.get("/users/:username/favorites", async (req, res) => {
   try {
     const username = req.params.username;
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ username }).populate("favorites");
     if (!user) {
       return res.status(404).send({ message: "User not found" });
     }
     res.send(user.favorites);
-    //console.log(user.favorites);
+    console.log(user.favorites);
   } catch (err) {
     console.log(err);
     res.status(500).send({ message: "Internal server error" });

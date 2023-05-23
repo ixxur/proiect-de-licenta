@@ -10,7 +10,6 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
   const role = user.role;
-  console.log(role);
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -36,8 +35,8 @@ const Navbar = () => {
           {role === "regular" && (
             <>
               <Typography variant="h6">
-                <NavLink to="/favorites" className={classes.navLink}>
-                  Favorites
+                <NavLink to="/roadmap" className={classes.navLink}>
+                  Roadmap
                 </NavLink>
               </Typography>
             </>
@@ -45,8 +44,8 @@ const Navbar = () => {
           {role === "admin" && (
             <>
               <Typography variant="h6">
-                <NavLink to="/admin/dashboard" className={classes.navLink}>
-                  Dashboard
+                <NavLink to="/admin/spot/add" className={classes.navLink}>
+                  New Spot
                 </NavLink>
               </Typography>
               <Typography variant="h6">
