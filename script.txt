@@ -1,0 +1,5 @@
+docker build -t my-backend -f D:\Ruxi\facultate\Licenta\proiect-de-licenta\server\Dockerfile .
+docker run -p 8080:8080 -d my-backend
+
+docker build -t my-frontend -f D:\Ruxi\facultate\Licenta\proiect-de-licenta\client\Dockerfile .
+docker run -p 80:80 -d my-frontend

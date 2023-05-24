@@ -6,7 +6,6 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
 //const routesHandler = require('./routes/auth.js');
 //const Schemas = require("../models/Schemas.js");
 const Spot = require("./models/Spot");
@@ -20,7 +19,7 @@ const axios = require("axios");
 require("dotenv/config");
 
 const app = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5001;
 
 app.use(cookieParser());
 app.use(cors({ origin: "http://localhost:3000", credentials: true }));
