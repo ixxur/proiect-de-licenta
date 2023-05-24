@@ -14,10 +14,12 @@ function Comment({ comment, username, onUpdate }) {
     setIsEditing(true);
   };
 
+  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+  
   const handleDelete = async () => {
     setIsDeleting(true);
     try {
-      await axios.delete(`/comments/${comment._id}`);
+      await axios.delete(`${API_URL}/comments/${comment._id}`);
       onUpdate();
     } catch (error) {
       console.log("Error deleting comment:", error);
@@ -31,7 +33,7 @@ function Comment({ comment, username, onUpdate }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    await axios.put(`/comments/${comment._id}`, { text: editedText });
+    await axios.put(`${API_URL}/comments/${comment._id}`, { text: editedText });
     setIsEditing(false);
     onUpdate();
   };

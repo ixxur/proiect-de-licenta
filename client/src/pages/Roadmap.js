@@ -1,6 +1,6 @@
 import Navbar from "../components/Navbar";
 import Map from "../components/Map";
-import { Rating, Grid, Container, IconButton, Box } from "@mui/material";
+import {Container, Box } from "@mui/material";
 
 const Roadmap = () => {
   return (

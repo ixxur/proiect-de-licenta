@@ -18,7 +18,7 @@ const center = {
   lng: 24.9668,
 };
 
-function NewSpotModal() {
+const NewSpotModal = () => {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -29,6 +29,8 @@ function NewSpotModal() {
     message: "",
     open: false,
   });
+
+  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
   const handleOpen = () => {
     setOpen(true);
@@ -48,7 +50,7 @@ function NewSpotModal() {
       imageUrl,
     };
     axios
-      .post("/spot", spot)
+      .post(`${API_URL}/spot`, spot)
       .then((response) => {
         //console.log(response.data);
         setNotification({ message: "Spot saved successfully", open: true });

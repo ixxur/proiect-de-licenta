@@ -28,14 +28,16 @@ const SpotDetailsPage = () => {
   const [userRating, setUserRating] = useState(
     userRatingObject ? userRatingObject.rating : null
   );
-
+ 
   const isFav = user.favorites.includes(id);
   const isVisited = user.visited.includes(id);
+
+  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
   useEffect(() => {
     const fetchSpotandWeather = async () => {
       try {
-        const response = await axios.get(`/spots/${id}`);
+        const response = await axios.get(`${API_URL}/spots/${id}`);
         setSpot(response.data);
         setAverageRating(response.data.avgRating);
       } catch (err) {
@@ -43,7 +45,7 @@ const SpotDetailsPage = () => {
       }
 
       try {
-        const weatherRes = await axios.get(`/spots/${id}/weather`);
+        const weatherRes = await axios.get(`${API_URL}/spots/${id}/weather`);
         // extract only the first 5 days from the daily forecast
         const fiveDaysWeather = weatherRes.data.daily
           .slice(0, 5)
@@ -72,7 +74,7 @@ const SpotDetailsPage = () => {
 
     // Send the new rating to the server
     try {
-      const response = await axios.post(`/users/${user.username}/rating`, {
+      const response = await axios.post(`${API_URL}/users/${user.username}/rating`, {
         spotId: spot._id,
         rating: newValue,
       });

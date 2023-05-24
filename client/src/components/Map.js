@@ -40,10 +40,12 @@ const Map = () => {
   const [directionsResponse, setDirectionsResponse] = useState(null);
   const [checkedSpots, setCheckedSpots] = useState([]);
 
+  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+
   useEffect(() => {
     const getAllSpots = async () => {
       try {
-        const response = await axios.get("/spots");
+        const response = await axios.get(`${API_URL}/spots`);
         // const favoritesResponse = await axios.get(`/users/${username}/favorites`);
         // // const userResponse = await axios.get(`/users/${username}/`);
         // // console.log(userResponse.data);

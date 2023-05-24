@@ -25,18 +25,20 @@ function App() {
   const { isLoggedIn } = useSelector((state) => state.auth);
   const { role } = useSelector((state) => state.auth.user);
 
+  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+
   useEffect(() => {
     const checkLoginStatus = async () => {
       console.log("useEffect app 1");
       try {
-        const response = await axios.get("/login", { withCredentials: true });
+        const response = await axios.get(`${API_URL}/login`, { withCredentials: true });
         console.log("useEffect app 2");
         const { user } = response.data;
         console.log(response);
         // const favoritesRes = await axios.get(
         //   `/users/${user.username}/favorites`
         // );
-        const favoritesResponse = await axios.get(`/users/${user.username}`);
+        const favoritesResponse = await axios.get(`${API_URL}/users/${user.username}`);
         console.log(favoritesResponse);
         console.log(favoritesResponse.data.favorites);
         const name = favoritesResponse.data.name;
@@ -47,7 +49,7 @@ function App() {
         const favorites = favoritesResponse.data.favorites || [];
         const visited = favoritesResponse.data.visited || [];
         const ratingsResponse = await axios.get(
-          `/users/${user.username}/ratings`
+          `${API_URL}/users/${user.username}/ratings`
         );
         const ratings = ratingsResponse.data.map((rating) => ({
           spotId: rating.spotId,
@@ -65,7 +67,7 @@ function App() {
             role,
             favorites,
             visited,
-            ratings, 
+            ratings,
             profilePicture,
             registrationDate,
           })

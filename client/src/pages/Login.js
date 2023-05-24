@@ -15,22 +15,24 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+
   axios.defaults.withCredentials = true;
 
   const login = async (event) => {
     event.preventDefault();
     console.log("login1");
     try {
-      const response = await axios.post("/login", {
+      const response = await axios.post(`${API_URL}/login`, {
         username: username,
         password: password,
       });
       console.log("login2");
-      const responseGet = await axios.get("/login", { withCredentials: true });
+      const responseGet = await axios.get(`${API_URL}/login`, { withCredentials: true });
       console.log(responseGet.data);
       const { user } = response.data;
       console.log(user);
-      const favoritesResponse = await axios.get(`/users/${user.username}`);
+      const favoritesResponse = await axios.get(`${API_URL}/users/${user.username}`);
       // const favoritesRes = await axios.get(
       //   `/users/${user.username}/favorites`
       // );
@@ -41,7 +43,7 @@ const Login = () => {
       const favorites = favoritesResponse.data.favorites || [];
       const visited = favoritesResponse.data.visited || [];
       const ratingsResponse = await axios.get(
-        `/users/${user.username}/ratings`
+        `${API_URL}/users/${user.username}/ratings`
       );
       const ratings = ratingsResponse.data.map((rating) => ({
         spotId: rating.spotId,
@@ -88,8 +90,11 @@ const Login = () => {
     checkLoginStatus();
   }, [dispatch, navigate]);
 
+  // const googleAuthHandler = () => {
+  //   window.open("http://localhost:5000/auth/google/callback", "_self");
+  // };
   const googleAuthHandler = () => {
-    window.open("http://localhost:5000/auth/google/callback", "_self");
+    window.open(`http://${API_URL}/auth/google/callback`, "_self");
   };
 
   return (

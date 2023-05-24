@@ -1,4 +1,3 @@
-import NewSpotModal from "../components/NewSpotModal";
 import SpotListing from "../components/SpotListing";
 import Navbar from "../components/Navbar";
 

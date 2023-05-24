@@ -12,9 +12,11 @@ const Navbar = () => {
   const role = user.role;
   const navigate = useNavigate();
 
+  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+
   const handleLogout = async () => {
     try {
-      const response = await axios.post("/logout");
+      const response = await axios.post(`${API_URL}/logout`);
       dispatch(logout(user));
       console.log(response.data.message);
       navigate("/login");

@@ -23,10 +23,12 @@ const SpotListing = () => {
   const [filterVisited, setFilterVisited] = useState(false);
   const [filterFavorites, setFilterFavorites] = useState(false);
 
+  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+  
   useEffect(() => {
     const getAllSpots = async () => {
       try {
-        const spotsResponse = await axios.get("/spots");
+        const spotsResponse = await axios.get(`${API_URL}/spots`);
         console.log(spotsResponse.data);
         setSpots(spotsResponse.data);
       } catch (err) {

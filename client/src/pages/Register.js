@@ -11,11 +11,13 @@ const Register = () => {
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const navigate = useNavigate();
 
+  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+
   const register = async (event) => {
     event.preventDefault();
 
     try {
-      const response = await axios.post("/register", {
+      const response = await axios.post(`${API_URL}/register`, {
         username: username,
         password: password,
         name: name,
