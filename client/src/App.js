@@ -36,7 +36,7 @@ function App() {
         const { user } = response.data;
         console.log(response);
         // const favoritesRes = await axios.get(
-        //   `/users/${user.username}/favorites`);
+        //    `/users/${user.username}/favorites`);
         const favoritesResponse = await axios.get(`${API_URL}/users/${user.username}`);
         console.log(favoritesResponse);
         console.log(favoritesResponse.data.favorites);
