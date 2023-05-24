@@ -55,7 +55,6 @@ function App() {
           spotId: rating.spotId,
           rating: rating.rating,
         }));
-        //const ratings = data.data.ratings || [];
         console.log(ratings);
         console.log(favorites);
         console.log(user);
