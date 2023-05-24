@@ -45,7 +45,6 @@ function App() {
         const role = favoritesResponse.data.role;
         const profilePicture = favoritesResponse.data.profilePicture;
         const registrationDate = favoritesResponse.data.createdAt;
-        //const favorites = favoritesRes.data || [];
         const favorites = favoritesResponse.data.favorites || [];
         const visited = favoritesResponse.data.visited || [];
         const ratingsResponse = await axios.get(
