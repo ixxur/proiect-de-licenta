@@ -1,31 +1,68 @@
-name: Server Image CI
+name: Client Image CI
 
 on:
   push:
     branches:
-      - main
+      - configure-dockerfiles
     paths:
       - 'server/**'
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - name: Check Out Code
-      uses: actions/checkout@v2
+      - name: Check Out Code
+        uses: actions/checkout@v3
 
-    - name: Log in to ACR
-      uses: docker/login-action@v1 
-      with:
-        registry: containerRegistryLicenta.azurecr.io
-        username: ${{ secrets.ACR_USERNAME }}
-        password: ${{ secrets.ACR_PASSWORD }}
-        
-    - name: Build and push Backend Docker image
-      uses: docker/build-push-action@v2
-      with:
-        context: ./server
-        push: true
-        tags: containerRegistryLicenta.azurecr.io/my-backend:latest
+      - name: Read current version
+        id: read_property
+        uses: christian-draeger/read-properties@1.1.1
+        with:
+          path: './VERSIONS/server_version'
+          properties: 'version'
+
+      - name: Current version
+        run: echo ${{ steps.read_property.outputs.version }}        
+
+      - name: Bump release version
+        id: bump_version
+        uses: christian-draeger/increment-semantic-version@1.1.0
+        with:
+          current-version: ${{ steps.read_property.outputs.version }}
+          version-fragment: 'bug'
+
+      - name: Log in to ACR
+        uses: docker/login-action@v1 
+        with:
+          registry: ${{ secrets.ACR_NAME }}.azurecr.io
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
+      - name: Build and push Frontend Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: ./server
+          push: true
+          tags: ${{ secrets.ACR_NAME }}.azurecr.io/my-backend:${{ steps.bump_version.outputs.next-version }}
+
+      - name: Remove existing version file
+        uses: JesseTG/rm@v1.0.3
+        with:
+          path: './VERSIONS/client_version'
+
+      - name: Write new version
+        uses: christian-draeger/write-properties@1.1.0
+        with:
+          path: './VERSIONS/client_version'
+          property: 'version'
+          value: ${{ steps.bump_version.outputs.next-version }}
+
+      - name: Git commit changes version number
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          file_pattern: ./VERSIONS/client_version
+          branch: configure-dockerfiles
+          commit_options: '--no-verify --signoff'
+          commit_user_name: ixxur
+          commit_message: 'Updated server_version to ${{ steps.bump_version.outputs.next-version }}'

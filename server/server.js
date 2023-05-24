@@ -22,7 +22,7 @@ const app = express();
 const port = process.env.PORT || 5001;
 
 app.use(cookieParser());
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+app.use(cors({ origin: process.env.FRONTEND_API, credentials: true }));
 app.use(express.json());
 app.use(bodyParser.json());
 //app.use('/', routesHandler);
@@ -186,7 +186,7 @@ app.get(
         sameSite: "strict",
         expires: expirationDate,
       });
-      res.redirect("http://localhost:3000/home");
+      res.redirect(`${process.env.FRONTEND_API}/home`);
     } catch (err) {
       console.log(err);
       return res.status(400).send({
