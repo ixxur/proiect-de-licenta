@@ -1,4 +1,4 @@
-name: Client Image CI
+name: Server Image CI
 
 on:
   push:
