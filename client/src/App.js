@@ -27,7 +27,7 @@ function App() {
 
   const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000"; 
 
-  useEffect(() => {
+  useEffect(() => { 
     const checkLoginStatus = async () => {
       console.log("useEffect app 1");
       try {

@@ -81,7 +81,7 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
  
-userSchema.plugin(findOrCreate);
+userSchema.plugin(findOrCreate); 
 userSchema.plugin(passportLocalMongoose);
 
 const User = new mongoose.model("users", userSchema);
