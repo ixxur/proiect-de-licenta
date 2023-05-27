@@ -126,7 +126,7 @@ const authenticateJWT = (req, res, next) => {
   if (!token) {
     return res.status(401).send({ message: "Unauthorized" });
   }
-
+ 
   jwt.verify(token, process.env.SECRETJWT, (err, decoded) => {
     if (err) {
       return res.status(401).send({ message: "Unauthorized" });
