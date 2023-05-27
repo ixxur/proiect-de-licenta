@@ -7,7 +7,7 @@ import Comment from "./Comment";
 const Comments = ({ spotId, username }) => {
   const [comments, setComments] = useState([]);
 
-  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+  const API_URL = process.env.REACT_APP_API_URL || "http://licenta2023backend.hopto.org" || "http://localhost:5000";
 
   const refreshComments = async () => {
     const response = await axios.get(`${API_URL}/spots/${spotId}/comments`);

@@ -32,7 +32,7 @@ const SpotDetailsPage = () => {
   const isFav = user.favorites.includes(id);
   const isVisited = user.visited.includes(id);
 
-  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+  const API_URL = process.env.REACT_APP_API_URL || "http://licenta2023backend.hopto.org" || "http://localhost:5000";
 
   useEffect(() => {
     const fetchSpotandWeather = async () => {

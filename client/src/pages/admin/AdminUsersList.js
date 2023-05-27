@@ -43,9 +43,11 @@ const AdminUsersList = () => {
     setSnackbarOpen(false);
   };
 
+  const API_URL = process.env.REACT_APP_API_URL || "http://licenta2023backend.hopto.org" || "http://localhost:5000";
+
   useEffect(() => {
     const fetchUsers = async () => {
-      const response = await axios.get("/users");
+      const response = await axios.get(`${API_URL}/users`);
       setUsers(sortUsers(response.data, sortKey, sortOrder));
     };
 
@@ -54,7 +56,7 @@ const AdminUsersList = () => {
 
   const handleDelete = async (username) => {
     try {
-      await axios.delete(`/users/${username}`);
+      await axios.delete(`${API_URL}/users/${username}`);
       setSnackbarMessage(`${username} deleted successfully`);
       setSnackbarSeverity("success");
     } catch (error) {

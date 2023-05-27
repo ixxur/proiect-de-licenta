@@ -29,10 +29,12 @@ const SpotDetailsEditPage = () => {
   });
   const [location, setLocation] = useState(null);
 
+  const API_URL = process.env.REACT_APP_API_URL || "http://licenta2023backend.hopto.org" || "http://localhost:5000";
+
   useEffect(() => {
     const fetchSpotandWeather = async () => {
       try {
-        const response = await axios.get(`/spots/${id}`);
+        const response = await axios.get(`${API_URL}/spots/${id}`);
         setSpot(response.data);
         setAverageRating(response.data.avgRating);
         setFormData({

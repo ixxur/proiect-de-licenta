@@ -32,6 +32,8 @@ const AddSpotPage = () => {
     open: false,
   });
 
+  const API_URL = process.env.REACT_APP_API_URL || "http://licenta2023backend.hopto.org" || "http://localhost:5000";
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const spot = {
@@ -43,7 +45,7 @@ const AddSpotPage = () => {
       imageUrl,
     };
     axios
-      .post("/spot", spot)
+      .post(`${API_URL}/spot`, spot)
       .then((response) => {
         console.log(response.data);
         setNotification({ message: "Spot saved successfully", open: true });

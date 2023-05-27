@@ -14,7 +14,7 @@ function Comment({ comment, username, onUpdate }) {
     setIsEditing(true);
   };
 
-  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+  const API_URL = process.env.REACT_APP_API_URL || "http://licenta2023backend.hopto.org" || "http://localhost:5000";
   
   const handleDelete = async () => {
     setIsDeleting(true);

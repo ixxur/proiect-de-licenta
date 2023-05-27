@@ -11,10 +11,12 @@ function AdminSpotsList() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
+  const API_URL = process.env.REACT_APP_API_URL || "http://licenta2023backend.hopto.org" || "http://localhost:5000";
+  
   useEffect(() => {
     const fetchSpots = async () => {
       try {
-        const response = await axios.get("/spots");
+        const response = await axios.get(`${API_URL}/spots`);
         setSpots(sortSpots(response.data, sortKey, sortOrder));
       } catch (error) {
         console.error("Failed to fetch spots", error);
