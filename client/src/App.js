@@ -26,7 +26,7 @@ function App() {
   const { role } = useSelector((state) => state.auth.user);
 
   const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000"; 
-
+ 
   useEffect(() => { 
     const checkLoginStatus = async () => {
       console.log("useEffect app 1");
