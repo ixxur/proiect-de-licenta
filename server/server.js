@@ -119,7 +119,7 @@ passport.use(
     }
   )
 );
-
+ 
 const authenticateJWT = (req, res, next) => {
   const token = req.cookies.token;
 
