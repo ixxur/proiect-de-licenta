@@ -3,7 +3,7 @@ name: Server Image CI
 on:
   push:
     branches:
-      - configure-dockerfiles
+      - connect-backend-fronted-aks
     paths:
       - 'server/**'
 

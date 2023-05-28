@@ -3,7 +3,7 @@ name: Client Image CI
 on:
   push:
     branches:
-      - configure-dockerfiles
+      - connect-backend-fronted-aks
     paths:
       - 'client/**'
 
