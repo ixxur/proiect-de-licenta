@@ -24,7 +24,7 @@ function App() {
   const dispatch = useDispatch();
   const { isLoggedIn } = useSelector((state) => state.auth);
   const { role } = useSelector((state) => state.auth.user);
-
+ 
   const API_URL = process.env.REACT_APP_API_URL || "http://licenta2023backend.hopto.org" || "http://localhost:5000"; 
  
   useEffect(() => { 
