@@ -49,12 +49,12 @@ jobs:
       - name: Remove existing version file
         uses: JesseTG/rm@v1.0.3
         with:
-          path: './VERSIONS/client_version'
+          path: './VERSIONS/server_version'
 
       - name: Write new version
         uses: christian-draeger/write-properties@1.1.0
         with:
-          path: './VERSIONS/client_version'
+          path: './VERSIONS/server_version'
           property: 'version'
           value: ${{ steps.bump_version.outputs.next-version }}
 

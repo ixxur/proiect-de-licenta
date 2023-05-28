@@ -35,7 +35,7 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
-
+console.log(process.env.FRONTEND_API);
 const uri = process.env.DB_URI; 
 
 const connectToMongoose = async () => {

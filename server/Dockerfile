@@ -13,6 +13,9 @@ RUN npm install
 # Bundle the application source inside the container
 COPY . .
 
+# Set the environment variable in the Docker image
+ENV FRONTEND_API=http://frontend-service.licenta.eec8dd5dad2b40b39b69.eastus.aksapp.io
+
 # Copy the .env file into our app directory
 # COPY .env ./
 
