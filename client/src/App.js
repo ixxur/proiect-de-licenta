@@ -19,7 +19,7 @@ import AdminUsersList from "./pages/admin/AdminUsersList";
 import SpotDetailsEditPage from "./pages/admin/SpotDetailsEditPage";
 import AddSpotPage from "./pages/admin/AddSpotPage";
 import { API_URL } from "./constants/url";
-
+ 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch();
