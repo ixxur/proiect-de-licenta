@@ -3,6 +3,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { Table, TableBody, TableCell, TableContainer, TablePagination, TableHead, TableRow, Paper, Button, TableSortLabel } from "@mui/material";
 import Navbar from "../../components/Navbar";
+import { API_URL } from "../constants/url";
 
 function AdminSpotsList() {
   const [spots, setSpots] = useState([]);
@@ -11,7 +12,7 @@ function AdminSpotsList() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  const API_URL = process.env.REACT_APP_API_URL || "http://licenta2023backend.hopto.org" || "http://localhost:5000";
+  // const API_URL = process.env.REACT_APP_API_URL || "http://licenta2023backend.hopto.org" || "http://localhost:5000";
   
   useEffect(() => {
     const fetchSpots = async () => {

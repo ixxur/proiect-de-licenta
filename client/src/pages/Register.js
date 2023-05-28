@@ -3,6 +3,7 @@ import Card from "../components/Card";
 import classes from "./Register.module.css";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import { API_URL } from "../constants/url";
 
 const Register = () => {
   const [name, setName] = useState("");
@@ -10,8 +11,6 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const navigate = useNavigate();
-
-  const API_URL = process.env.REACT_APP_API_URL || "http://licenta2023backend.hopto.org" || "http://localhost:5000";
 
   const register = async (event) => {
     event.preventDefault();

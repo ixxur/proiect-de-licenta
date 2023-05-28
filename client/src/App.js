@@ -18,6 +18,7 @@ import AdminSpotsList from "./pages/admin/AdminSpotsList";
 import AdminUsersList from "./pages/admin/AdminUsersList";
 import SpotDetailsEditPage from "./pages/admin/SpotDetailsEditPage";
 import AddSpotPage from "./pages/admin/AddSpotPage";
+import { API_URL } from "../constants/url";
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -25,7 +26,7 @@ function App() {
   const { isLoggedIn } = useSelector((state) => state.auth);
   const { role } = useSelector((state) => state.auth.user);
  
-  const API_URL = process.env.REACT_APP_API_URL || "http://licenta2023backend.hopto.org" || "http://localhost:5000"; 
+  // const API_URL = window._env_.REACT_APP_API_URL || "http://licenta2023backend.hopto.org" || "http://localhost:5000"; 
  
   useEffect(() => { 
     const checkLoginStatus = async () => {

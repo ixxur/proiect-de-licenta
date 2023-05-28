@@ -25,8 +25,11 @@ COPY --from=build /app/build /usr/share/nginx/html
 # The build context should include default.conf file.
 COPY default.conf /etc/nginx/conf.d/default.conf
 
+# Copy the env-config template
+COPY ./public/env-config.js /usr/share/nginx/html
+
 # Expose port 3000 to the outside
 EXPOSE 3000 
 
-# Start Nginx server
-CMD ["nginx", "-g", "daemon off;"]
+# Replace environment variables in env-config.js and start Nginx server
+CMD /bin/sh -c "envsubst < /usr/share/nginx/html/env-config.js > /usr/share/nginx/html/env-config.js && exec nginx -g 'daemon off;'"

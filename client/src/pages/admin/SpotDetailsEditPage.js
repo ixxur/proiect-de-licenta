@@ -7,6 +7,7 @@ import { TextField, Button, Table, TableCell, TableRow } from "@mui/material";
 import Navbar from "../../components/Navbar";
 import { GoogleMap, Marker } from "@react-google-maps/api";
 import Comments from "../../components/Comments";
+import { API_URL } from "../constants/url";
 
 const containerStyle = {
   width: "100%",
@@ -29,7 +30,7 @@ const SpotDetailsEditPage = () => {
   });
   const [location, setLocation] = useState(null);
 
-  const API_URL = process.env.REACT_APP_API_URL || "http://licenta2023backend.hopto.org" || "http://localhost:5000";
+  // const API_URL = process.env.REACT_APP_API_URL || "http://licenta2023backend.hopto.org" || "http://localhost:5000";
 
   useEffect(() => {
     const fetchSpotandWeather = async () => {

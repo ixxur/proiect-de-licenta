@@ -7,6 +7,7 @@ import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import { GoogleMap, Marker } from "@react-google-maps/api";
 import classes from "./NewSpotModal.module.css";
+import { API_URL } from "../constants/url";
 
 const containerStyle = {
   width: "100%",
@@ -30,7 +31,7 @@ const NewSpotModal = () => {
     open: false,
   });
 
-  const API_URL = process.env.REACT_APP_API_URL || "http://licenta2023backend.hopto.org" || "http://localhost:5000";
+  // const API_URL = process.env.REACT_APP_API_URL || "http://licenta2023backend.hopto.org" || "http://localhost:5000";
 
   const handleOpen = () => {
     setOpen(true);

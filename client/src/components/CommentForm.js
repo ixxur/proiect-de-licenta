@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import axios from "axios";
 import { TextField, Button } from "@mui/material";
 import { useSelector } from "react-redux";
+import { API_URL } from "../constants/url";
 
 const CommentForm = ({ spotId, username, onUpdate }) => {
   const { role } = useSelector((state) => state.auth.user);
   const [text, setText] = useState("");
 
-  const API_URL = process.env.REACT_APP_API_URL || "http://licenta2023backend.hopto.org" || "http://localhost:5000";
+  // const API_URL = process.env.REACT_APP_API_URL || "http://licenta2023backend.hopto.org" || "http://localhost:5000";
 
   const handleSubmit = async (event) => {
     event.preventDefault();

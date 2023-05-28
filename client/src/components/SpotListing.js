@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import SpotCard from "./SpotCard";
 import { useSelector } from "react-redux";
+import { API_URL } from "../constants/url";
 
 const SpotListing = () => {
   const user = useSelector((state) => state.auth.user);
@@ -23,7 +24,7 @@ const SpotListing = () => {
   const [filterVisited, setFilterVisited] = useState(false);
   const [filterFavorites, setFilterFavorites] = useState(false);
 
-  const API_URL = process.env.REACT_APP_API_URL || "http://licenta2023backend.hopto.org" || "http://localhost:5000";
+  // const API_URL = process.env.REACT_APP_API_URL || "http://licenta2023backend.hopto.org" || "http://localhost:5000";
   
   useEffect(() => {
     const getAllSpots = async () => {

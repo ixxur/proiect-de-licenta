@@ -1,11 +1,14 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { API_URL } from "../constants/url";
+
+// const API_URL = window._env_.REACT_APP_API_URL || "http://licenta2023backend.hopto.org" || "http://localhost:5000";
 
 export const toggleFavoriteSpot = createAsyncThunk(
   "auth/toggleFavoriteSpot",
   async (spotId, { getState, dispatch }) => {
     console.log(spotId);
-    const API_URL = process.env.REACT_APP_API_URL || "http://licenta2023backend.hopto.org" || "http://localhost:5000";
+    
     const { username, favorites } = getState().auth.user;
     console.log(getState().auth.user);
     try {
@@ -28,7 +31,6 @@ export const toggleVisitedSpot = createAsyncThunk(
   "auth/toggleVisitedSpot",
   async (spotId, { getState, dispatch }) => {
     console.log(spotId);
-    const API_URL = process.env.REACT_APP_API_URL || "http://licenta2023backend.hopto.org" || "http://localhost:5000";
     const { username, visited } = getState().auth.user;
     console.log(getState().auth.user);
     try {
@@ -50,7 +52,6 @@ export const toggleVisitedSpot = createAsyncThunk(
 export const fetchUserRatings = createAsyncThunk(
   "auth/fetchUserRatings",
   async (username, { rejectWithValue }) => {
-    const API_URL = process.env.REACT_APP_API_URL || "http://licenta2023backend.hopto.org" || "http://localhost:5000";
     try {
       const response = await axios.get(`${API_URL}/users/${username}/ratings`);
       const ratings = response.data.map((rating) => ({
@@ -68,7 +69,6 @@ export const fetchUserRatings = createAsyncThunk(
 export const postUserRating = createAsyncThunk(
   "auth/postUserRating",
   async ({ username, spotId, rating }, { rejectWithValue }) => {
-    const API_URL = process.env.REACT_APP_API_URL || "http://licenta2023backend.hopto.org" || "http://localhost:5000";
     try {
       const response = await axios.post(`${API_URL}/users/${username}/rating`, {
         spotId,
@@ -84,7 +84,6 @@ export const postUserRating = createAsyncThunk(
 export const updateUserData = createAsyncThunk(
   "auth/updateUserData",
   async ({ username, name, profilePicture }, { rejectWithValue }) => {
-    const API_URL = process.env.REACT_APP_API_URL || "http://licenta2023backend.hopto.org" || "http://localhost:5000";
     try {
       const response = await axios.put(`${API_URL}/users/${username}`, {
         name,

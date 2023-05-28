@@ -21,6 +21,7 @@ import {
   DialogTitle,
 } from "@mui/material";
 import Navbar from "../../components/Navbar";
+import { API_URL } from "../constants/url";
 
 const AdminUsersList = () => {
   const [users, setUsers] = useState([]);
@@ -43,7 +44,7 @@ const AdminUsersList = () => {
     setSnackbarOpen(false);
   };
 
-  const API_URL = process.env.REACT_APP_API_URL || "http://licenta2023backend.hopto.org" || "http://localhost:5000";
+  // const API_URL = process.env.REACT_APP_API_URL || "http://licenta2023backend.hopto.org" || "http://localhost:5000";
 
   useEffect(() => {
     const fetchUsers = async () => {

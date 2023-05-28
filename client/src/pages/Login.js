@@ -7,6 +7,7 @@ import classes from "./Login.module.css";
 import axios from "axios";
 import { loginSuccess } from "../store/authSlice";
 import { useNavigate, Link } from "react-router-dom";
+import { API_URL } from "../constants/url";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -15,7 +16,7 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const API_URL = process.env.REACT_APP_API_URL || "http://licenta2023backend.hopto.org" || "http://localhost:5000";
+  // const API_URL = process.env.REACT_APP_API_URL || "http://licenta2023backend.hopto.org" || "http://localhost:5000";
 
   axios.defaults.withCredentials = true;
 

@@ -3,6 +3,7 @@ import axios from "axios";
 import { Button, TextField, ListItem, ListItemText } from "@mui/material";
 import { format } from "timeago.js";
 import { useSelector } from "react-redux";
+import { API_URL } from "../constants/url";
 
 function Comment({ comment, username, onUpdate }) {
   const { role } = useSelector((state) => state.auth.user);
@@ -14,7 +15,7 @@ function Comment({ comment, username, onUpdate }) {
     setIsEditing(true);
   };
 
-  const API_URL = process.env.REACT_APP_API_URL || "http://licenta2023backend.hopto.org" || "http://localhost:5000";
+  // const API_URL = process.env.REACT_APP_API_URL || "http://licenta2023backend.hopto.org" || "http://localhost:5000";
   
   const handleDelete = async () => {
     setIsDeleting(true);
