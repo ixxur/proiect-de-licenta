@@ -45,6 +45,8 @@ jobs:
           context: ./client
           push: true
           tags: ${{ secrets.ACR_NAME }}.azurecr.io/my-frontend:${{ steps.bump_version.outputs.next-version }}
+          build-args: |
+            REACT_APP_API_URL=http://backend-service.licenta.eec8dd5dad2b40b39b69.eastus.aksapp.io
 
       - name: Remove existing version file
         uses: JesseTG/rm@v1.0.3
