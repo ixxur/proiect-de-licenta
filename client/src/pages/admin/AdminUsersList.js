@@ -21,7 +21,7 @@ import {
   DialogTitle,
 } from "@mui/material";
 import Navbar from "../../components/Navbar";
-import { API_URL } from "../constants/url";
+import { API_URL } from "../../constants/url";
 
 const AdminUsersList = () => {
   const [users, setUsers] = useState([]);

@@ -3,7 +3,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { Table, TableBody, TableCell, TableContainer, TablePagination, TableHead, TableRow, Paper, Button, TableSortLabel } from "@mui/material";
 import Navbar from "../../components/Navbar";
-import { API_URL } from "../constants/url";
+import { API_URL } from "../../constants/url";
 
 function AdminSpotsList() {
   const [spots, setSpots] = useState([]);

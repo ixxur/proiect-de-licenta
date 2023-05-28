@@ -7,7 +7,7 @@ import { TextField, Button, Table, TableCell, TableRow } from "@mui/material";
 import Navbar from "../../components/Navbar";
 import { GoogleMap, Marker } from "@react-google-maps/api";
 import Comments from "../../components/Comments";
-import { API_URL } from "../constants/url";
+import { API_URL } from "../../constants/url";
 
 const containerStyle = {
   width: "100%",
