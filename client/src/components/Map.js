@@ -19,6 +19,7 @@ import {
   Button,
   Grid,
 } from "@mui/material";
+import { API_URL } from "../constants/url";
 
 const containerStyle = {
   width: "100%",
@@ -40,7 +41,7 @@ const Map = () => {
   const [directionsResponse, setDirectionsResponse] = useState(null);
   const [checkedSpots, setCheckedSpots] = useState([]);
 
-  const API_URL = process.env.REACT_APP_API_URL || "http://licenta2023backend.hopto.org" || "http://localhost:5000";
+  // const API_URL = process.env.REACT_APP_API_URL || "http://licenta2023backend.hopto.org" || "http://localhost:5000";
 
   useEffect(() => {
     const getAllSpots = async () => {

@@ -48,7 +48,7 @@ function AdminSpotsList() {
 
   const deleteSpot = async (id) => {
     try {
-      await axios.delete(`/spots/${id}`);
+      await axios.delete(`${API_URL}/spots/${id}`);
       // Remove the deleted spot from the state
       setSpots(spots.filter((spot) => spot._id !== id));
     } catch (error) {
