@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { List, ListItem, ListItemText } from "@mui/material";
+import { List } from "@mui/material";
 import CommentForm from "./CommentForm";
 import Comment from "./Comment";
 

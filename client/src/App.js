@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+import classes from "./App.module.css";
 import axios from "axios";
 import { LoadScript } from "@react-google-maps/api";
-import "./App.css";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Start from "./pages/Start";
 import Home from "./pages/Home";
 import SpotDetailsPage from "./pages/SpotDetailsPage";
 import ProtectedRoutes from "./utils/ProtectedRoutes";
@@ -18,12 +17,15 @@ import AdminSpotsList from "./pages/admin/AdminSpotsList";
 import AdminUsersList from "./pages/admin/AdminUsersList";
 import SpotDetailsEditPage from "./pages/admin/SpotDetailsEditPage";
 import AddSpotPage from "./pages/admin/AddSpotPage";
+import Loading from "./components/Loading";
+import { getRandomImage } from "./constans/functions";
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch();
   const { isLoggedIn } = useSelector((state) => state.auth);
   const { role } = useSelector((state) => state.auth.user);
+  const [backgroundImage, setBackgroundImage] = useState(null);
 
   useEffect(() => {
     const checkLoginStatus = async () => {
@@ -65,7 +67,7 @@ function App() {
             role,
             favorites,
             visited,
-            ratings, 
+            ratings,
             profilePicture,
             registrationDate,
           })
@@ -78,55 +80,64 @@ function App() {
     };
 
     checkLoginStatus();
+    setBackgroundImage(getRandomImage());
   }, [dispatch]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   return (
-    <BrowserRouter>
-      <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
-        <Routes>
-          <Route path="/" element={<Start />} />
-          <Route path="/register" element={<Register />} />
-          <Route
-            path="/login"
-            element={isLoggedIn ? <Navigate to="/home" /> : <Login />}
-          />
-          <Route
-            element={
-              isLoggedIn ? <ProtectedRoutes /> : <Navigate to="/login" />
-            }
-          >
-            <Route path="/home" element={<Home />} />
-            <Route path="/roadmap" element={<Roadmap />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/spot/:id" element={<SpotDetailsPage />} />
-          </Route>
-          <Route
-            path="/admin"
-            element={
-              isLoggedIn && role === "admin" ? (
-                <ProtectedAdminRoutes />
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          >
-            <Route path="/admin/spots" element={<AdminSpotsList />} />
-            <Route path="/admin/spot/add" element={<AddSpotPage />} />
-            <Route path="/admin/spot/:id" element={<SpotDetailsPage />} />
+    <div className={classes.app}>
+      <div
+        className={classes.background} 
+        style={{ backgroundImage: `url(${backgroundImage})` }}
+      />
+      <BrowserRouter>
+        <LoadScript
+          googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
+        >
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route path="/register" element={<Register />} />
             <Route
-              path="/admin/spot/:id/edit"
-              element={<SpotDetailsEditPage />}
+              path="/login"
+              element={isLoggedIn ? <Navigate to="/home" /> : <Login />}
             />
-            <Route path="/admin/users" element={<AdminUsersList />} />
-          </Route>
-          <Route path="*" element={<Navigate to="/login" />} />
-        </Routes>
-      </LoadScript>
-    </BrowserRouter>
+            <Route
+              element={
+                isLoggedIn ? <ProtectedRoutes /> : <Navigate to="/login" />
+              }
+            >
+              <Route path="/home" element={<Home />} />
+              <Route path="/roadmap" element={<Roadmap />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/spot/:id" element={<SpotDetailsPage />} />
+            </Route>
+            <Route
+              path="/admin"
+              element={
+                isLoggedIn && role === "admin" ? (
+                  <ProtectedAdminRoutes />
+                ) : (
+                  <Navigate to="/login" />
+                )
+              }
+            >
+              <Route path="/admin/spots" element={<AdminSpotsList />} />
+              <Route path="/admin/spot/add" element={<AddSpotPage />} />
+              <Route path="/admin/spot/:id" element={<SpotDetailsPage />} />
+              <Route
+                path="/admin/spot/:id/edit"
+                element={<SpotDetailsEditPage />}
+              />
+              <Route path="/admin/users" element={<AdminUsersList />} />
+            </Route>
+            <Route path="*" element={<Navigate to="/login" />} />
+          </Routes>
+        </LoadScript>
+      </BrowserRouter>
+    </div>
   );
 }
 

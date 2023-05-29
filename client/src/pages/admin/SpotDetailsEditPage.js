@@ -7,6 +7,7 @@ import { TextField, Button, Table, TableCell, TableRow } from "@mui/material";
 import Navbar from "../../components/Navbar";
 import { GoogleMap, Marker } from "@react-google-maps/api";
 import Comments from "../../components/Comments";
+import Loading from "../../components/Loading";
 
 const containerStyle = {
   width: "100%",
@@ -55,7 +56,7 @@ const SpotDetailsEditPage = () => {
     fetchSpotandWeather();
   }, [id]);
 
-  if (!spot) return <div>Loading...</div>;
+  if (!spot) return <Loading/>;
 
   const handleInputChange = (event) => {
     setFormData({ ...formData, [event.target.name]: event.target.value });

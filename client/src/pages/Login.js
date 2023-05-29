@@ -1,17 +1,41 @@
-//import { Form } from "react";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-//import { useSelector } from "react-redux";
-import Card from "../components/Card";
-import classes from "./Login.module.css";
 import axios from "axios";
 import { loginSuccess } from "../store/authSlice";
 import { useNavigate, Link } from "react-router-dom";
+import { TextField, Button, Card, Typography, Box } from "@mui/material";
+import { styled } from "@mui/system";
+
+const StyledCard = styled(Card)({
+  padding: "2rem",
+  margin: "auto",
+  marginTop: "2rem",
+  maxWidth: "600px",
+  textAlign: "center",
+  minHeight: "50vh",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  borderRadius: "5%",
+});
+
+const StyledTextField = styled(TextField)({
+  marginTop: "1.5rem",
+});
+
+const StyledButton = styled(Button)({
+  margin: "1rem",
+});
+
+const StyledTypography = styled(Typography)({
+  marginTop: "1.5rem",
+});
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  // const [loginStatus, setLoginStatus] = useState("");
+  const [loginError, setLoginError] = useState("");
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -63,7 +87,7 @@ const Login = () => {
       console.log(user);
       navigate("/home");
     } catch (error) {
-      console.log(error);
+      setLoginError("Email sau parola invalide.");
     }
   };
 
@@ -93,32 +117,51 @@ const Login = () => {
   };
 
   return (
-    <Card>
-      <h1>Login Page</h1>
-      <form className={classes.form} onSubmit={login}>
-        <input
-          id="email"
-          type="email"
-          placeholder="Email"
-          onChange={(event) => {
-            setUsername(event.target.value);
-          }}
-        />
-        <input
-          id="password"
-          type="password"
-          placeholder="Password"
-          onChange={(event) => {
-            setPassword(event.target.value);
-          }}
-        />
-        <button type="submit">Login</button>
-      </form>
-      <button onClick={googleAuthHandler}>Sign in with Google</button>
-      <p>
-        Don't have an account? <Link to="/register">Sign up!</Link>
-      </p>
-    </Card>
+    // <div
+    //   className={classes.background}
+    //   style={{
+    //     backgroundImage: `url(${image})`,
+    //     opacity: 0.5,
+    //     backgroundSize: "cover",
+    //     height: "100vh",
+    //     width: "100vw",
+    //   }}
+    // >
+      <StyledCard>
+        <Typography variant="h4" component="div" gutterBottom>
+          Conecteaza-te
+        </Typography>
+        <form onSubmit={login}>
+          <StyledTextField
+            fullWidth
+            label="Email"
+            variant="outlined"
+            onChange={(event) => setUsername(event.target.value)}
+          />
+          <StyledTextField
+            fullWidth
+            label="Parola"
+            variant="outlined"
+            type="password"
+            onChange={(event) => setPassword(event.target.value)}
+          />
+          {loginError && <Box color="error.main">{loginError}</Box>}
+          <StyledButton type="submit" variant="contained">
+            Login
+          </StyledButton>
+          <StyledButton
+            variant="contained"
+            color="primary"
+            onClick={googleAuthHandler}
+          >
+            Sign in with Google
+          </StyledButton>
+        </form>
+        <StyledTypography variant="body1">
+          Nu ai un cont? <Link to="/register">Inregistreaza-te acum!</Link>
+        </StyledTypography>
+      </StyledCard>
+    // </div>
   );
 };
 

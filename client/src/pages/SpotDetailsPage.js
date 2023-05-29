@@ -13,6 +13,7 @@ import {
   WhereToVote,
 } from "@mui/icons-material";
 import { toggleFavoriteSpot, toggleVisitedSpot } from "../store/authSlice";
+import Loading from "../components/Loading";
 
 const SpotDetailsPage = () => {
   const dispatch = useDispatch();
@@ -63,7 +64,7 @@ const SpotDetailsPage = () => {
     fetchSpotandWeather();
   }, [id, userRating]);
 
-  if (!spot) return <div>Loading...</div>;
+  if (!spot) return <Loading/>;
 
   const { name, description, whenToGo, imageUrl } = spot;
 

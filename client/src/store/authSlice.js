@@ -163,7 +163,7 @@ export const authSlice = createSlice({
       console.log(action.payload);
       state.user.visited.push(action.payload);
     },
-    removeVisiteSpot: (state, action) => {
+    removeVisitedSpot: (state, action) => {
       console.log(action.payload);
       const newVisited = state.user.visited.filter(
         (spotId) => spotId !== action.payload
