@@ -18,8 +18,8 @@ import AdminUsersList from "./pages/admin/AdminUsersList";
 import SpotDetailsEditPage from "./pages/admin/SpotDetailsEditPage";
 import AddSpotPage from "./pages/admin/AddSpotPage";
 import Loading from "./components/Loading";
-import { getRandomImage } from "./constans/functions";
-import { API_URL } from "./constants/url";
+import { getRandomImage } from "./constants/functions";
+import { API_URL, GOOGLE_MAPS_API_KEY } from "./constants/url";
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -97,7 +97,7 @@ function App() {
       />
       <BrowserRouter>
         <LoadScript
-          googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
+          googleMapsApiKey={GOOGLE_MAPS_API_KEY}
         >
           <Routes>
             <Route path="/" element={<Login />} />
