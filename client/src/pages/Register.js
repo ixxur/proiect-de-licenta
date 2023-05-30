@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { TextField, Button, Card, Typography, Box } from "@mui/material";
 import { styled } from "@mui/system";
-import classes from "./Register.module.css";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { API_URL } from "../constants/url";
