@@ -61,6 +61,6 @@ jobs:
       - name: Git commit changes version number
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          file_pattern: ./VERSIONS/client_version
+          file_pattern: ./VERSIONS/server_version
           branch: connect-backend-fronted-aks
           commit_message: 'Updated server_version to ${{ steps.bump_version.outputs.next-version }}'

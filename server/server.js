@@ -298,7 +298,6 @@ app.post("/logout", (req, res) => {
 
 app.post(
   "/register",
-  "/register",
   [
     check("username").isEmail().withMessage("Username must be a valid email"),
     check("password")
