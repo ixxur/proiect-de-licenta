@@ -1,37 +1,23 @@
 .root {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 2em;
   max-width: 600px;
   margin: auto;
 }
 
 .avatar {
-  width: 300px;
-  height: 300px;
-  margin-bottom: 1rem;
+  width: 350px;
+  height: 350px;
 }
+
 .selected {
   border: 2px solid red;
 }
-.image {
-  width: 30%;
-  cursor: pointer;
-  margin: 10px;  /* Add some */
-}
 
-.modalContent {
-  padding: 1em;
-  border: 2px solid #ddd;
-  background-color: rgba(255, 255, 255, 0.9);
-  margin: 2em;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.image {
+  width: 100px;
+  height: 100px;
+  cursor: pointer;
 }
 
 .textField {
-  margin-bottom: 20px;
   width: 100%;
 }

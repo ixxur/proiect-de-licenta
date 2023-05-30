@@ -58,11 +58,9 @@ jobs:
           property: 'version'
           value: ${{ steps.bump_version.outputs.next-version }}
 
-      # - name: Git commit changes version number
-      #   uses: stefanzweifel/git-auto-commit-action@v4
-      #   with:
-      #     file_pattern: ./VERSIONS/client_version
-      #     branch: configure-dockerfiles
-      #     commit_options: '--no-verify --signoff'
-      #     commit_user_name: ixxur
-      #     commit_message: 'Updated server_version to ${{ steps.bump_version.outputs.next-version }}'
+      - name: Git commit changes version number
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          file_pattern: ./VERSIONS/client_version
+          branch: connect-backend-fronted-aks
+          commit_message: 'Updated server_version to ${{ steps.bump_version.outputs.next-version }}'

@@ -7,6 +7,7 @@ import { TextField, Button, Table, TableCell, TableRow } from "@mui/material";
 import Navbar from "../../components/Navbar";
 import { GoogleMap, Marker } from "@react-google-maps/api";
 import Comments from "../../components/Comments";
+import Loading from "../../components/Loading";
 import { API_URL } from "../../constants/url";
 
 const containerStyle = {
@@ -15,7 +16,6 @@ const containerStyle = {
 };
 
 const SpotDetailsEditPage = () => {
-  // ... Your existing code here...
   const { id } = useParams();
   const { username } = useSelector((state) => state.auth.user);
   const [spot, setSpot] = useState(null);
@@ -58,7 +58,7 @@ const SpotDetailsEditPage = () => {
     fetchSpotandWeather();
   }, [id]);
 
-  if (!spot) return <div>Loading...</div>;
+  if (!spot) return <Loading />;
 
   const handleInputChange = (event) => {
     setFormData({ ...formData, [event.target.name]: event.target.value });
@@ -162,7 +162,9 @@ const SpotDetailsEditPage = () => {
               </TableCell>
             </TableRow>
           </Table>
-          <Button fullWidth type="submit" variant="outlined" color="primary">Update Spot</Button>
+          <Button fullWidth type="submit" variant="outlined" color="primary">
+            Update Spot
+          </Button>
         </form>
         <Comments spotId={id} username={username} />
       </div>

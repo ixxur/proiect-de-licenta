@@ -13,6 +13,7 @@ import {
   WhereToVote,
 } from "@mui/icons-material";
 import { toggleFavoriteSpot, toggleVisitedSpot } from "../store/authSlice";
+import Loading from "../components/Loading";
 import { API_URL } from "../constants/url";
 
 // const API_URL = window._env_.REACT_APP_API_URL || "http://licenta2023backend.hopto.org" || "http://localhost:5000";
@@ -66,7 +67,7 @@ const SpotDetailsPage = () => {
     fetchSpotandWeather();
   }, [id, userRating]);
 
-  if (!spot) return <div>Loading...</div>;
+  if (!spot) return <Loading/>;
 
   const { name, description, whenToGo, imageUrl } = spot;
 

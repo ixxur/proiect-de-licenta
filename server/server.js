@@ -16,6 +16,7 @@ const findOrCreate = require("mongoose-findorcreate");
 const passportLocalMongoose = require("passport-local-mongoose");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const axios = require("axios");
+const { check, validationResult } = require("express-validator");
 require("dotenv/config");
 
 const app = express();
@@ -36,7 +37,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 console.log(process.env.FRONTEND_API);
-const uri = process.env.DB_URI; 
+const uri = process.env.DB_URI;
 
 const connectToMongoose = async () => {
   try {
@@ -80,8 +81,8 @@ const userSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-  
-userSchema.plugin(findOrCreate); 
+
+userSchema.plugin(findOrCreate);
 userSchema.plugin(passportLocalMongoose);
 
 const User = new mongoose.model("users", userSchema);
@@ -90,7 +91,7 @@ passport.use(User.createStrategy());
 
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
- 
+
 passport.use(
   new GoogleStrategy(
     {
@@ -119,14 +120,14 @@ passport.use(
     }
   )
 );
- 
+
 const authenticateJWT = (req, res, next) => {
   const token = req.cookies.token;
 
   if (!token) {
     return res.status(401).send({ message: "Unauthorized" });
   }
- 
+
   jwt.verify(token, process.env.SECRETJWT, (err, decoded) => {
     if (err) {
       return res.status(401).send({ message: "Unauthorized" });
@@ -295,23 +296,46 @@ app.post("/logout", (req, res) => {
   }
 });
 
-app.post("/register", (req, res) => {
-  const { username, password, name } = req.body;
-  User.register(new User({ username, name }), password, (err, user) => {
-    if (err) {
-      console.log(err);
-      res.status(400).send({
-        success: false,
-        message: "Failed to register new user. Error " + err,
-      });
+app.post(
+  "/register",
+  "/register",
+  [
+    check("username").isEmail().withMessage("Username must be a valid email"),
+    check("password")
+      .isLength({ min: 8 })
+      .withMessage("Password must be at least 8 characters long")
+      .matches(/[a-z]/)
+      .withMessage("Password must contain at least one lowercase character")
+      .matches(/[A-Z]/)
+      .withMessage("Password must contain at least one uppercase character")
+      .matches(/\d/)
+      .withMessage("Password must contain at least one number")
+      .matches(/\W/)
+      .withMessage("Password must contain at least one special character"),
+  ],
+  (req, res) => {
+    // Finds the validation errors in this request and wraps them in an object with handy functions
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
     }
-    passport.authenticate("local")(req, res, () => {
-      res
-        .status(200)
-        .send({ success: true, message: "Success registering new user" });
+    const { username, password, name } = req.body;
+    User.register(new User({ username, name }), password, (err, user) => {
+      if (err) {
+        console.log(err);
+        res.status(400).send({
+          success: false,
+          message: "Failed to register new user. Error " + err,
+        });
+      }
+      passport.authenticate("local")(req, res, () => {
+        res
+          .status(200)
+          .send({ success: true, message: "Success registering new user" });
+      });
     });
-  });
-});
+  }
+);
 
 app.get("/home", (req, res) => {
   res.status(200).send({ success: true, message: "Here is the home page" });

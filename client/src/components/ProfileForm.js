@@ -8,6 +8,7 @@ import {
   Grid,
   Modal,
   Box,
+  Card,
 } from "@mui/material";
 import Profile1 from "../assets/pictures/profile-pictures/profile1.png";
 import Profile2 from "../assets/pictures/profile-pictures/profile2.png";
@@ -19,6 +20,7 @@ import Profile7 from "../assets/pictures/profile-pictures/profile7.png";
 import Profile8 from "../assets/pictures/profile-pictures/profile8.png";
 import Profile9 from "../assets/pictures/profile-pictures/profile9.png";
 import classes from "./ProfileForm.module.css";
+import { styled } from "@mui/system";
 
 const profileImages = [
   Profile1,
@@ -31,6 +33,19 @@ const profileImages = [
   Profile8,
   Profile9,
 ];
+
+const StyledCard = styled(Card)({
+  padding: "2rem",
+  margin: "auto",
+  marginTop: "2rem",
+  maxWidth: "600px",
+  textAlign: "center",
+  minHeight: "40vh",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  borderRadius: "5%",
+});
 
 const ProfileForm = ({ user }) => {
   const dispatch = useDispatch();
@@ -70,65 +85,97 @@ const ProfileForm = ({ user }) => {
   };
 
   return (
-    <Box className={classes.root}>
-      <Avatar
-        style={{ width: "100px", height: "100px" }}
-        src={profileImages[profilePicture]}
-        alt="Profile picture"
-      />
-      {isEditing && (
-        <Button onClick={() => setOpenModal(true)}>
-          Change Profile Picture
-        </Button>
-      )}
-      <TextField
-        className={classes.textField}
-        label="Name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        disabled={!isEditing}
-      />
-      <TextField
-        className={classes.textField}
-        label="Username"
-        value={user.username}
-        disabled
-      />
-      <TextField
-        className={classes.textField}
-        label="Member since"
-        value={user.registrationDate}
-        disabled
-      />
-      <Button
-        onClick={isEditing ? handleSubmit : () => setIsEditing(!isEditing)}
+    <StyledCard>
+      <Box
+        className={classes.root}
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 3, // Added gap property for spacing
+          marginTop: "5em",
+        }}
       >
-        {isEditing ? "Save Changes" : "Edit Profile"}
-      </Button>
-      <Modal open={openModal} onClose={() => setOpenModal(false)}>
-        <Box className={classes.modalContent}>
-          <Grid container justifyContent="center">
-            {profileImages.map((picture, index) => (
-              <Grid
-                item
-                xs={4}
-                key={index}
-                onClick={() => handleProfilePictureChange(index)}
-              >
-                <img
-                  src={picture}
-                  alt={`Option ${index + 1}`}
-                  className={`${classes.image} ${
-                    profilePicture === index ? classes.selected : ""
-                  }`}
-                />
-              </Grid>
-            ))}
-          </Grid>
-        </Box>
-      </Modal>
-      {error && <p>{error}</p>}
-    </Box>
+        <Avatar
+          style={{ width: "100px", height: "100px" }}
+          src={profileImages[profilePicture]}
+          alt="Profile picture"
+        />
+        {isEditing && (
+          <Button onClick={() => setOpenModal(true)}>
+            Change Profile Picture
+          </Button>
+        )}
+        <TextField
+          fullWidth
+          className={classes.textField}
+          label="Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          disabled={!isEditing}
+        />
+        <TextField
+          fullWidth
+          className={classes.textField}
+          label="Username"
+          value={user.username}
+          disabled
+        />
+        <TextField
+          fullWidth
+          className={classes.textField}
+          label="Member since"
+          value={user.registrationDate}
+          disabled
+        />
+        <Button
+          onClick={isEditing ? handleSubmit : () => setIsEditing(!isEditing)}
+        >
+          {isEditing ? "Save Changes" : "Edit Profile"}
+        </Button>
+        <Modal open={openModal} onClose={() => setOpenModal(false)}>
+          <Box
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: 400, 
+              bgcolor: "background.paper",
+              border: "2px solid grey",
+              boxShadow: 24,
+              p: 4,
+              borderRadius: "5%",
+            }}
+          >
+            <Grid
+              container
+              justifyContent="space-between"
+              alignItems="center"
+              spacing={3}
+            >
+              {profileImages.map((picture, index) => (
+                <Grid
+                  item
+                  xs={4}
+                  key={index}
+                  onClick={() => handleProfilePictureChange(index)}
+                >
+                  <img
+                    src={picture}
+                    alt={`Option ${index + 1}`}
+                    className={`${classes.image} ${
+                      profilePicture === index ? classes.selected : ""
+                    }`}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+          </Box>
+        </Modal>
+        {error && <p>{error}</p>}
+      </Box>
+    </StyledCard>
   );
 };
 

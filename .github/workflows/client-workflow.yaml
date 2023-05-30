@@ -46,7 +46,8 @@ jobs:
           push: true
           tags: ${{ secrets.ACR_NAME }}.azurecr.io/my-frontend:${{ steps.bump_version.outputs.next-version }}
           build-args: |
-            REACT_APP_API_URL=http://backend-service.licenta.eec8dd5dad2b40b39b69.eastus.aksapp.io
+            REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }}
+            REACT_APP_GOOGLE_MAPS_API_KEY=${{ secrets.REACT_APP_GOOGLE_MAPS_API_KEY }}
 
       - name: Remove existing version file
         uses: JesseTG/rm@v1.0.3
@@ -60,11 +61,9 @@ jobs:
           property: 'version'
           value: ${{ steps.bump_version.outputs.next-version }}
 
-      # - name: Git commit changes version number
-      #   uses: stefanzweifel/git-auto-commit-action@v4
-      #   with:
-      #     file_pattern: ./VERSIONS/client_version
-      #     branch: configure-dockerfiles
-      #     commit_options: '--no-verify --signoff'
-      #     commit_user_name: ixxur
-      #     commit_message: 'Updated client_version to ${{ steps.bump_version.outputs.next-version }}'
+      - name: Git commit changes version number
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          file_pattern: ./VERSIONS/client_version
+          branch: connect-backend-fronted-aks
+          commit_message: 'Updated client_version to ${{ steps.bump_version.outputs.next-version }}'
