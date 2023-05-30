@@ -6,9 +6,11 @@ WORKDIR /app
 
 # Add REACT_APP_API_URL as a build argument
 ARG REACT_APP_API_URL
+ARG REACT_APP_GOOGLE_MAPS_API_KEY
 
 # Set REACT_APP_API_URL as an environment variable
 ENV REACT_APP_API_URL=$REACT_APP_API_URL
+ENV REACT_APP_GOOGLE_MAPS_API_KEY=$REACT_APP_GOOGLE_MAPS_API_KEY
 
 # Copy the package.json and package-lock.json files into the container
 COPY package*.json ./

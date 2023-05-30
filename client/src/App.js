@@ -40,8 +40,6 @@ function App() {
         console.log("useEffect app 2");
         const { user } = response.data;
         console.log(response);
-        // const favoritesRes = await axios.get(
-        //    `/users/${user.username}/favorites`);
         const favoritesResponse = await axios.get(
           `${API_URL}/users/${user.username}`
         );
