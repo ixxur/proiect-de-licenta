@@ -17,6 +17,7 @@ import AdminSpotsList from "./pages/admin/AdminSpotsList";
 import AdminUsersList from "./pages/admin/AdminUsersList";
 import SpotDetailsEditPage from "./pages/admin/SpotDetailsEditPage";
 import AddSpotPage from "./pages/admin/AddSpotPage";
+import ForgotPassword from "./pages/ForgotPassword";
 import Loading from "./components/Loading";
 import { getRandomImage } from "./constants/functions";
 import { API_URL, GOOGLE_MAPS_API_KEY } from "./constants/url";
@@ -96,12 +97,11 @@ function App() {
         style={{ backgroundImage: `url(${backgroundImage})` }}
       />
       <BrowserRouter>
-        <LoadScript
-          googleMapsApiKey={GOOGLE_MAPS_API_KEY}
-        >
+        <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY}>
           <Routes>
             <Route path="/" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/forgot" element={<ForgotPassword />} />
             <Route
               path="/login"
               element={isLoggedIn ? <Navigate to="/home" /> : <Login />}

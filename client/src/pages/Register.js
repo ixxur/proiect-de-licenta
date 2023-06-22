@@ -64,15 +64,15 @@ const Register = () => {
   const validatePassword = () => {
     let error = "";
     if (password.length < 8) {
-      error = "Parola trebuie sa contina minim 8 caractere.";
+      error = "Parola trebuie să conțină minim 8 caractere.";
     } else if (!/[a-z]/.test(password)) {
-      error = "Parola trebuie sa contina minim o litera mica.";
+      error = "Parola trebuie să conțină minim o literă mică.";
     } else if (!/[A-Z]/.test(password)) {
-      error = "Parola trebuie sa contina minim o majuscula.";
+      error = "Parola trebuie să conțină minim o majusculă.";
     } else if (!/\d/.test(password)) {
-      error = "Parola trebuie sa contina minim un numar.";
+      error = "Parola trebuie să conțină minim un număr.";
     } else if (!/\W/.test(password)) {
-      error = "Parola trebuie sa contina minim un caracter special.";
+      error = "Parola trebuie sa contină minim un caracter special.";
     }
     setPasswordError(error);
     return error === "";
@@ -101,7 +101,7 @@ const Register = () => {
         <StyledTextField
           fullWidth
           margin="normal"
-          label="Parola"
+          label="Parolă"
           variant="outlined"
           type="password"
           onChange={(event) => setPassword(event.target.value)}
@@ -109,7 +109,7 @@ const Register = () => {
         <StyledTextField
           fullWidth
           margin="normal"
-          label="Confirma parola"
+          label="Confirmă parola"
           variant="outlined"
           type="password"
           onChange={(event) => setPasswordConfirmation(event.target.value)}
@@ -122,11 +122,11 @@ const Register = () => {
           variant="contained"
           disabled={password !== passwordConfirmation}
         >
-          Inregistare
+          Înregistare
         </StyledButton>
       </form>
       <StyledTypography variant="body1">
-        Deja ai un cont? <Link to="/login">Conecteaza-te!</Link>
+        Deja ai un cont? <Link to="/login">Conectează-te acum!</Link>
       </StyledTypography>
     </StyledCard>
   );

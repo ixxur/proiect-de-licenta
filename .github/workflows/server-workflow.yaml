@@ -1,11 +1,11 @@
 name: Server Image CI
 
-on:
-  push:
-    branches:
-      - connect-backend-fronted-aks
-    paths:
-      - 'server/**'
+# on:
+#   push:
+#     branches:
+#       - connect-backend-fronted-aks
+#     paths:
+#       - 'server/**'
 
 jobs:
   build:

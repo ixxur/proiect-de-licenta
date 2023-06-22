@@ -77,7 +77,7 @@ const SpotCard = ({ spot }) => {
             ? spot.description.slice(0, 170) + "..."
             : spot.description}
         </Typography>
-        <Link to={`/spot/${spot._id}`}>See more details</Link>
+        <Link to={`/spot/${spot._id}`}>Citește în continuare</Link>
       </CardContent>
     </Card>
   );

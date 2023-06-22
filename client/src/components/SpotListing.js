@@ -105,7 +105,7 @@ const SpotListing = () => {
         <Grid container spacing={3} alignItems="center">
           <Grid item xs={12} sm={4}>
             <TextField
-              label="Search"
+              label="Caută"
               variant="outlined"
               value={searchTerm}
               onChange={handleSearch}
@@ -118,7 +118,9 @@ const SpotListing = () => {
               onChange={handleFilterRating}
               fullWidth
             >
-              <MenuItem value={0}>No Filter</MenuItem>
+              <MenuItem value={0}>Fără filtrare</MenuItem>
+              <MenuItem value={1}>1+</MenuItem>
+              <MenuItem value={2}>2+</MenuItem>
               <MenuItem value={3}>3+</MenuItem>
               <MenuItem value={4}>4+</MenuItem>
               <MenuItem value={5}>5</MenuItem>
@@ -126,9 +128,9 @@ const SpotListing = () => {
           </Grid>
           <Grid item xs={12} sm={4}>
             <Select value={sortOrder} onChange={handleSortOrder} fullWidth>
-              <MenuItem value="none">No Sort</MenuItem>
-              <MenuItem value="desc">Descending</MenuItem>
-              <MenuItem value="asc">Ascending</MenuItem>
+            <MenuItem value="none">Fără sortare</MenuItem>
+              <MenuItem value="desc">Rating descrescător</MenuItem>
+              <MenuItem value="asc">Rating crescător</MenuItem>
             </Select>
           </Grid>
           <Grid item xs={12} sm={4}>
@@ -139,7 +141,7 @@ const SpotListing = () => {
                   onChange={handleFilterVisited}
                 />
               }
-              label="Show visited spots"
+              label="Arată atracțiile vizitate"
             />
           </Grid>
           <Grid item xs={12} sm={4}>
@@ -150,7 +152,7 @@ const SpotListing = () => {
                   onChange={handleFilterFavorites}
                 />
               }
-              label="Show favorites spots"
+              label="Arată atracțiile favorite"
             />
           </Grid>
         </Grid>

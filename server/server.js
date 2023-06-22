@@ -336,6 +336,50 @@ app.post(
   }
 );
 
+app.post(
+  "/forgot",
+  [
+    check("username").isEmail().withMessage("Please enter a valid email address"),
+    check("password")
+      .isLength({ min: 8 })
+      .withMessage("Password must be at least 8 characters long")
+      .matches(/[a-z]/)
+      .withMessage("Password must contain at least one lowercase character")
+      .matches(/[A-Z]/)
+      .withMessage("Password must contain at least one uppercase character")
+      .matches(/\d/)
+      .withMessage("Password must contain at least one number")
+      .matches(/\W/)
+      .withMessage("Password must contain at least one special character"),
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    const { username, password } = req.body;
+
+    try {
+      const user = await User.findOne({ username: username });
+      if (!user) {
+        return res.status(400).json({ message: "No account with that email found." });
+      }
+
+      user.setPassword(password, async function(err, user) {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({ message: "Internal server error." });
+        }
+        await user.save();
+        res.status(200).json({ message: "Password has been updated." });
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Internal server error." });
+    }
+  }
+);
+
 app.get("/home", (req, res) => {
   res.status(200).send({ success: true, message: "Here is the home page" });
 });
@@ -393,6 +437,23 @@ app.put("/spots/:id", authenticateJWT, authorizeAdmin, async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send({ message: "Error updating spot" });
+  }
+});
+
+app.delete("/spots/:id", authenticateJWT, authorizeAdmin, async (req, res) => {
+  const spotId = req.params.id;
+
+  try {
+    const spot = await Spot.findByIdAndDelete(spotId);
+
+    if (!spot) {
+      return res.status(404).send({ message: "Spot not found" });
+    }
+
+    res.send({ message: `Spot with id ${spotId} deleted successfully` });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ message: "Error deleting spot" });
   }
 });
 

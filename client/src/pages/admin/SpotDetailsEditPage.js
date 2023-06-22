@@ -3,7 +3,14 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Rating from "@mui/material/Rating";
-import { TextField, Button, Table, TableCell, TableRow } from "@mui/material";
+import {
+  TextField,
+  Button,
+  Table,
+  TableCell,
+  TableRow,
+  Snackbar,
+} from "@mui/material";
 import Navbar from "../../components/Navbar";
 import { GoogleMap, Marker } from "@react-google-maps/api";
 import Comments from "../../components/Comments";
@@ -29,8 +36,10 @@ const SpotDetailsEditPage = () => {
     imageUrl: "",
   });
   const [location, setLocation] = useState(null);
-
-  // const API_URL = process.env.REACT_APP_API_URL || "http://licenta2023backend.hopto.org" || "http://localhost:5000";
+  const [notification, setNotification] = useState({
+    open: false,
+    message: "",
+  });
 
   useEffect(() => {
     const fetchSpotandWeather = async () => {
@@ -70,10 +79,19 @@ const SpotDetailsEditPage = () => {
     try {
       const response = await axios.put(`${API_URL}/spots/${id}`, formData);
       console.log(response);
-      // Here you could refresh the page, or display a success message, etc.
+      setNotification({ open: true, message: "Spot updated successfully" });
     } catch (error) {
       console.log("Error updating spot:", error);
+      setNotification({ open: true, message: "Could not update spot" });
     }
+  };
+
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setNotification({ ...notification, open: false });
   };
 
   return (
@@ -83,7 +101,7 @@ const SpotDetailsEditPage = () => {
         <form onSubmit={handleSubmit}>
           <Table>
             <TableRow>
-              <TableCell>Name</TableCell>
+              <TableCell>Titlu</TableCell>
               <TableCell>
                 <TextField
                   name="name"
@@ -94,7 +112,7 @@ const SpotDetailsEditPage = () => {
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell>Image URL</TableCell>
+              <TableCell>URL imagine</TableCell>
               <TableCell>
                 <TextField
                   name="imageUrl"
@@ -109,7 +127,7 @@ const SpotDetailsEditPage = () => {
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell>Description</TableCell>
+              <TableCell>Descriere</TableCell>
               <TableCell>
                 <TextField
                   name="description"
@@ -121,7 +139,7 @@ const SpotDetailsEditPage = () => {
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell>When to go</TableCell>
+              <TableCell>Când să mergi</TableCell>
               <TableCell>
                 <TextField
                   name="whenToGo"
@@ -144,7 +162,7 @@ const SpotDetailsEditPage = () => {
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell>Map</TableCell>
+              <TableCell>Hartă</TableCell>
               <TableCell>
                 <GoogleMap
                   mapContainerStyle={containerStyle}
@@ -163,9 +181,15 @@ const SpotDetailsEditPage = () => {
             </TableRow>
           </Table>
           <Button fullWidth type="submit" variant="outlined" color="primary">
-            Update Spot
+            Actualizează
           </Button>
         </form>
+        <Snackbar
+          open={notification.open}
+          autoHideDuration={6000}
+          onClose={handleSnackbarClose}
+          message={notification.message}
+        />
         <Comments spotId={id} username={username} />
       </div>
     </>

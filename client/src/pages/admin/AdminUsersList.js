@@ -18,7 +18,7 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle,
+  DialogTitle, Typography
 } from "@mui/material";
 import Navbar from "../../components/Navbar";
 import { API_URL } from "../../constants/url";
@@ -43,8 +43,6 @@ const AdminUsersList = () => {
 
     setSnackbarOpen(false);
   };
-
-  // const API_URL = process.env.REACT_APP_API_URL || "http://licenta2023backend.hopto.org" || "http://localhost:5000";
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -148,7 +146,7 @@ const AdminUsersList = () => {
                   direction={sortOrder}
                   onClick={() => handleSort("name")}
                 >
-                  Name
+                  <Typography fontWeight="bold">Nume</Typography>
                 </TableSortLabel>
               </TableCell>
               <TableCell>
@@ -157,7 +155,7 @@ const AdminUsersList = () => {
                   direction={sortOrder}
                   onClick={() => handleSort("username")}
                 >
-                  Username
+                  <Typography fontWeight="bold">Username</Typography>
                 </TableSortLabel>
               </TableCell>
               <TableCell>
@@ -166,7 +164,7 @@ const AdminUsersList = () => {
                   direction={sortOrder}
                   onClick={() => handleSort("role")}
                 >
-                  Role
+                   <Typography fontWeight="bold">Rol</Typography>
                 </TableSortLabel>
               </TableCell>
               <TableCell>
@@ -175,10 +173,10 @@ const AdminUsersList = () => {
                   direction={sortOrder}
                   onClick={() => handleSort("createdAt")}
                 >
-                  Registration Date
+                  <Typography fontWeight="bold">Data înregistrării</Typography>
                 </TableSortLabel>
               </TableCell>
-              <TableCell>Action</TableCell>
+              <TableCell><Typography fontWeight="bold">Acțiuni</Typography></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -207,7 +205,7 @@ const AdminUsersList = () => {
                         color="error"
                         onClick={() => handleDeletePrompt(user.username)}
                       >
-                        Delete
+                        Șterge
                       </Button>
                     )}
                   </TableCell>
@@ -232,7 +230,7 @@ const AdminUsersList = () => {
         color="error"
         onClick={() => handleDeletePrompt(selectedUsers)}
       >
-        Delete Selected Users
+        Șterge utilizatorii selectați
       </Button>
       <Snackbar
         open={snackbarOpen}

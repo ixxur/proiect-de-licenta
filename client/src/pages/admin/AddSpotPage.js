@@ -7,6 +7,9 @@ import {
   TableCell,
   TableRow,
   Snackbar,
+  TableContainer,
+  Paper,
+  Typography,
 } from "@mui/material";
 import Navbar from "../../components/Navbar";
 import { GoogleMap, Marker } from "@react-google-maps/api";
@@ -68,14 +71,17 @@ const AddSpotPage = () => {
   return (
     <>
       <Navbar />
-      <div>
+      <TableContainer component={Paper}>
         <form onSubmit={handleSubmit}>
-          <Table>
+          <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableRow>
-              <TableCell>Name</TableCell>
+              <TableCell align="center">
+                <Typography fontWeight="bold">Titlu</Typography>
+              </TableCell>
               <TableCell>
                 <TextField
                   name="name"
+                  label="titlu"
                   fullWidth
                   value={name}
                   onChange={(event) => setName(event.target.value)}
@@ -83,21 +89,31 @@ const AddSpotPage = () => {
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell>Image URL</TableCell>
+              <TableCell align="center">
+                <Typography fontWeight="bold">URL imagine</Typography>
+              </TableCell>
               <TableCell>
                 <TextField
                   name="imageUrl"
+                  label="url imagine"
                   value={imageUrl}
                   onChange={(event) => setImageUrl(event.target.value)}
                 />
-                <img src={imageUrl} alt={name} style={{ maxWidth: "300px" }} />
+                <img
+                  src={imageUrl}
+                  alt={name}
+                  style={{ maxWidth: "300px", maxHeight: "90px" }}
+                />
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell>Description</TableCell>
+              <TableCell align="center">
+                <Typography fontWeight="bold">Descriere</Typography>
+              </TableCell>
               <TableCell>
                 <TextField
                   name="description"
+                  label="descriere"
                   multiline
                   fullWidth
                   value={description}
@@ -106,7 +122,9 @@ const AddSpotPage = () => {
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell>When to go</TableCell>
+              <TableCell align="center">
+                <Typography fontWeight="bold">Când să mergi</Typography>
+              </TableCell>
               <TableCell>
                 <TextField
                   name="whenToGo"
@@ -118,7 +136,9 @@ const AddSpotPage = () => {
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell>Map</TableCell>
+              <TableCell align="center">
+                <Typography fontWeight="bold">Hartă</Typography>
+              </TableCell>
               <TableCell>
                 <GoogleMap
                   mapContainerStyle={containerStyle}
@@ -136,16 +156,16 @@ const AddSpotPage = () => {
             </TableRow>
           </Table>
           <Button fullWidth type="submit" variant="outlined" color="primary">
-            Add Spot
+            Adaugă locație
           </Button>
         </form>
-        <Snackbar
-          open={notification.open}
-          autoHideDuration={6000}
-          onClose={handleNotificationClose}
-          message={notification.message}
-        />
-      </div>
+      </TableContainer>
+      <Snackbar
+        open={notification.open}
+        autoHideDuration={6000}
+        onClose={handleNotificationClose}
+        message={notification.message}
+      />
     </>
   );
 };
