@@ -19,6 +19,7 @@ import SpotDetailsEditPage from "./pages/admin/SpotDetailsEditPage";
 import AddSpotPage from "./pages/admin/AddSpotPage";
 import Loading from "./components/Loading";
 import { getRandomImage } from "./constans/functions";
+import ForgotPassword from "./pages/ForgotPassword";
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -100,6 +101,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/forgot" element={<ForgotPassword />} />
             <Route
               path="/login"
               element={isLoggedIn ? <Navigate to="/home" /> : <Login />}

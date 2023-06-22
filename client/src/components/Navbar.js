@@ -27,47 +27,51 @@ const Navbar = () => {
     <AppBar position="static">
       <Toolbar>
         <Box display="flex" justifyContent="space-between" width="100%">
-          <Typography variant="h6">
-            <NavLink to="/home" end={true} className={classes.navLink}>
-              Home
-            </NavLink>
-          </Typography>
-          {role === "regular" && (
-            <>
-              <Typography variant="h6">
-                <NavLink to="/roadmap" className={classes.navLink}>
-                  Roadmap
-                </NavLink>
-              </Typography>
-            </>
-          )}
-          {role === "admin" && (
-            <>
-              <Typography variant="h6">
-                <NavLink to="/admin/spot/add" className={classes.navLink}>
-                  New Spot
-                </NavLink>
-              </Typography>
-              <Typography variant="h6">
-                <NavLink to="/admin/spots" className={classes.navLink}>
-                  Spots
-                </NavLink>
-              </Typography>
-              <Typography variant="h6">
-                <NavLink to="/admin/users" className={classes.navLink}>
-                  Users
-                </NavLink>
-              </Typography>
-            </>
-          )}
-          <Typography variant="h6">
-            <NavLink to="/profile" className={classes.navLink}>
-              Profile
-            </NavLink>
-          </Typography>
-          <Button color="inherit" onClick={handleLogout}>
-            Logout
-          </Button>
+          <Box display="flex" justifyContent="flex-start">
+            <Typography variant="h6" style={{ marginRight: '30px' }}>
+              <NavLink to="/home" end={true} className={classes.navLink}>
+                Acasă
+              </NavLink>
+            </Typography>
+            {role === "regular" && (
+              <>
+                <Typography variant="h6" style={{ marginRight: '30px' }}>
+                  <NavLink to="/roadmap" className={classes.navLink}>
+                    Roadmap
+                  </NavLink>
+                </Typography>
+              </>
+            )}
+            {role === "admin" && (
+              <>
+                <Typography variant="h6" style={{ marginRight: '30px' }}>
+                  <NavLink to="/admin/spot/add" className={classes.navLink}>
+                    Adaugă 
+                  </NavLink>
+                </Typography>
+                <Typography variant="h6" style={{ marginRight: '30px' }}>
+                  <NavLink to="/admin/spots" className={classes.navLink}>
+                    Atracții
+                  </NavLink>
+                </Typography>
+                <Typography variant="h6" style={{ marginRight: '30px' }}>
+                  <NavLink to="/admin/users" className={classes.navLink}>
+                    Utilizatori
+                  </NavLink>
+                </Typography>
+              </>
+            )}
+            <Typography variant="h6" style={{ marginRight: '30px' }}>
+              <NavLink to="/profile" className={classes.navLink}>
+                Profil
+              </NavLink>
+            </Typography>
+          </Box>
+          <Box display="flex" justifyContent="flex-end">
+            <Button color="inherit" onClick={handleLogout}>
+              Ieșire
+            </Button>
+          </Box>
         </Box>
       </Toolbar>
     </AppBar>

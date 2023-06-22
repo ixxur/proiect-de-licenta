@@ -24,7 +24,7 @@ const CommentForm = ({ spotId, username, onUpdate }) => {
         <TextField
           value={text}
           onChange={(e) => setText(e.target.value)}
-          label="Leave a comment"
+          label="Lasă un comentariu"
           variant="outlined"
           fullWidth
           multiline
@@ -32,7 +32,7 @@ const CommentForm = ({ spotId, username, onUpdate }) => {
           margin="normal"
         />
         <Button type="submit" variant="contained">
-          Submit
+          Adaugă comentariu
         </Button>
       </form>
     );

@@ -1,8 +1,16 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Button, TextField, ListItem, ListItemText } from "@mui/material";
+import {
+  Button,
+  TextField,
+  ListItem,
+  ListItemText,
+  ListItemAvatar,
+  Avatar,
+} from "@mui/material";
 import { format } from "timeago.js";
 import { useSelector } from "react-redux";
+import { PROFILE_PICTURES } from "../constans/images";
 
 function Comment({ comment, username, onUpdate }) {
   const { role } = useSelector((state) => state.auth.user);
@@ -37,29 +45,34 @@ function Comment({ comment, username, onUpdate }) {
   };
 
   if (isDeleting) {
-    return <p>Deleting comment...</p>;
+    return <p>Ștergere comentariu...</p>;
   }
 
   if (isEditing) {
     return (
       <form onSubmit={handleSubmit}>
         <TextField value={editedText} onChange={handleChange} />
-        <Button type="submit">Submit</Button>
+        <Button type="submit">Adaugă comentariu</Button>
       </form>
     );
   }
 
   return (
     <ListItem>
+      <ListItemAvatar>
+        <Avatar>
+          <img src={PROFILE_PICTURES[Math.floor(Math.random() * PROFILE_PICTURES.length)]}  style={{height: '100%', width: '100%'}} alt="profile" />
+        </Avatar>
+      </ListItemAvatar>
       <ListItemText
         primary={comment.username}
         secondary={comment.text + " • " + format(comment.updatedAt)}
       />
       {(username === comment.username || role === "admin") && (
         <div>
-          <Button onClick={handleEdit}>Edit</Button>
+          <Button onClick={handleEdit}>Editează</Button>
           <Button style={{ color: "red" }} onClick={handleDelete}>
-            Delete
+            Șterge
           </Button>
         </div>
       )}

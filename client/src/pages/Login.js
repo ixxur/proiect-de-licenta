@@ -127,40 +127,43 @@ const Login = () => {
     //     width: "100vw",
     //   }}
     // >
-      <StyledCard>
-        <Typography variant="h4" component="div" gutterBottom>
-          Conecteaza-te
+    <StyledCard>
+      <Typography variant="h4" component="div" gutterBottom>
+        Conectează-te
+      </Typography>
+      <form onSubmit={login}>
+        <StyledTextField
+          fullWidth
+          label="Email"
+          variant="outlined"
+          onChange={(event) => setUsername(event.target.value)}
+        />
+        <StyledTextField
+          fullWidth
+          label="Parolă"
+          variant="outlined"
+          type="password"
+          onChange={(event) => setPassword(event.target.value)}
+        />
+        <Typography variant="body1">
+          <Link to="/forgot">Mi-am uitat parola.</Link>
         </Typography>
-        <form onSubmit={login}>
-          <StyledTextField
-            fullWidth
-            label="Email"
-            variant="outlined"
-            onChange={(event) => setUsername(event.target.value)}
-          />
-          <StyledTextField
-            fullWidth
-            label="Parola"
-            variant="outlined"
-            type="password"
-            onChange={(event) => setPassword(event.target.value)}
-          />
-          {loginError && <Box color="error.main">{loginError}</Box>}
-          <StyledButton type="submit" variant="contained">
-            Login
-          </StyledButton>
-          <StyledButton
-            variant="contained"
-            color="primary"
-            onClick={googleAuthHandler}
-          >
-            Sign in with Google
-          </StyledButton>
-        </form>
-        <StyledTypography variant="body1">
-          Nu ai un cont? <Link to="/register">Inregistreaza-te acum!</Link>
-        </StyledTypography>
-      </StyledCard>
+        {loginError && <Box color="error.main">{loginError}</Box>}
+        <StyledButton type="submit" variant="contained">
+          Login
+        </StyledButton>
+        <StyledButton
+          variant="contained"
+          color="primary"
+          onClick={googleAuthHandler}
+        >
+          Conectează-te cu Google
+        </StyledButton>
+      </form>
+      <StyledTypography variant="body1">
+        Nu ai un cont? <Link to="/register">Înregistrează-te acum!</Link>
+      </StyledTypography>
+    </StyledCard>
     // </div>
   );
 };

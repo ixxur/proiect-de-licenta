@@ -18,7 +18,7 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle,
+  DialogTitle, Typography
 } from "@mui/material";
 import Navbar from "../../components/Navbar";
 
@@ -145,7 +145,7 @@ const AdminUsersList = () => {
                   direction={sortOrder}
                   onClick={() => handleSort("name")}
                 >
-                  Name
+                 <Typography fontWeight="bold">Nume</Typography>
                 </TableSortLabel>
               </TableCell>
               <TableCell>
@@ -154,7 +154,7 @@ const AdminUsersList = () => {
                   direction={sortOrder}
                   onClick={() => handleSort("username")}
                 >
-                  Username
+                  <Typography fontWeight="bold">Username</Typography>
                 </TableSortLabel>
               </TableCell>
               <TableCell>
@@ -163,7 +163,7 @@ const AdminUsersList = () => {
                   direction={sortOrder}
                   onClick={() => handleSort("role")}
                 >
-                  Role
+                  <Typography fontWeight="bold">Rol</Typography>
                 </TableSortLabel>
               </TableCell>
               <TableCell>
@@ -172,10 +172,10 @@ const AdminUsersList = () => {
                   direction={sortOrder}
                   onClick={() => handleSort("createdAt")}
                 >
-                  Registration Date
+                  <Typography fontWeight="bold">Data înregistrării</Typography>
                 </TableSortLabel>
               </TableCell>
-              <TableCell>Action</TableCell>
+              <TableCell><Typography fontWeight="bold">Acțiuni</Typography></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -204,7 +204,7 @@ const AdminUsersList = () => {
                         color="error"
                         onClick={() => handleDeletePrompt(user.username)}
                       >
-                        Delete
+                        Șterge
                       </Button>
                     )}
                   </TableCell>
@@ -229,7 +229,7 @@ const AdminUsersList = () => {
         color="error"
         onClick={() => handleDeletePrompt(selectedUsers)}
       >
-        Delete Selected Users
+        Șterge utilizatorii selectați
       </Button>
       <Snackbar
         open={snackbarOpen}

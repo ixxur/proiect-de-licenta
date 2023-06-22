@@ -1,7 +1,13 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
-import { TextField, Button, Card, Typography, Box } from "@mui/material";
+import {
+  TextField,
+  Button,
+  Card,
+  Typography,
+  Box,
+} from "@mui/material";
 import { styled } from "@mui/system";
 
 const StyledCard = styled(Card)({
@@ -51,7 +57,7 @@ const Register = () => {
       await axios.post("/register", {
         username: username,
         password: password,
-        name: name
+        name: name,
       });
 
       navigate("/login");
@@ -61,73 +67,73 @@ const Register = () => {
   };
 
   const validatePassword = () => {
-    let error = '';
-    if(password.length < 8) {
-      error = 'Parola trebuie sa contina minim 8 caractere.';
+    let error = "";
+    if (password.length < 8) {
+      error = "Parola trebuie să conțină minim 8 caractere.";
     } else if (!/[a-z]/.test(password)) {
-      error = 'Parola trebuie sa contina minim o litera mica.';
+      error = "Parola trebuie să conțină minim o literă mică.";
     } else if (!/[A-Z]/.test(password)) {
-      error = 'Parola trebuie sa contina minim o majuscula.';
+      error = "Parola trebuie să conțină minim o majusculă.";
     } else if (!/\d/.test(password)) {
-      error = 'Parola trebuie sa contina minim un numar.';
+      error = "Parola trebuie să conțină minim un număr.";
     } else if (!/\W/.test(password)) {
-      error = 'Parola trebuie sa contina minim un caracter special.';
+      error = "Parola trebuie sa contină minim un caracter special.";
     }
     setPasswordError(error);
-    return error === '';
+    return error === "";
   };
 
   return (
-    <StyledCard>
-      <Typography variant="h4" component="div" gutterBottom>
-        Vreau cont
-      </Typography>
-      <form onSubmit={register}>
-        <StyledTextField
-          fullWidth
-          margin="normal"
-          label="Nume"
-          variant="outlined"
-          onChange={(event) => setName(event.target.value)}
-        />
-        <StyledTextField
-          fullWidth
-          margin="normal"
-          label="Email"
-          variant="outlined"
-          onChange={(event) => setUsername(event.target.value)}
-        />
-        <StyledTextField
-          fullWidth
-          margin="normal"
-          label="Parola"
-          variant="outlined"
-          type="password"
-          onChange={(event) => setPassword(event.target.value)}
-        />
-        <StyledTextField
-          fullWidth
-          margin="normal"
-          label="Confirma parola"
-          variant="outlined"
-          type="password"
-          onChange={(event) => setPasswordConfirmation(event.target.value)}
-        />
-        {formSubmitted && passwordError && (
-          <Box color="error.main">{passwordError}</Box>
-        )}
-        <StyledButton
-          type="submit"
-          variant="contained"
-          disabled={password !== passwordConfirmation}
-        >
-          Inregistare
-        </StyledButton>
-      </form>
-      <StyledTypography variant="body1">
-        Deja ai un cont? <Link to="/login">Conecteaza-te!</Link>
-      </StyledTypography>
-    </StyledCard>
+      <StyledCard>
+        <Typography variant="h4" component="div" gutterBottom>
+          Vreau cont
+        </Typography>
+        <form onSubmit={register}>
+          <StyledTextField
+            fullWidth
+            margin="normal"
+            label="Nume"
+            variant="outlined"
+            onChange={(event) => setName(event.target.value)}
+          />
+          <StyledTextField
+            fullWidth
+            margin="normal"
+            label="Email"
+            variant="outlined"
+            onChange={(event) => setUsername(event.target.value)}
+          />
+          <StyledTextField
+            fullWidth
+            margin="normal"
+            label="Parolă"
+            variant="outlined"
+            type="password"
+            onChange={(event) => setPassword(event.target.value)}
+          />
+          <StyledTextField
+            fullWidth
+            margin="normal"
+            label="Confirmă parola"
+            variant="outlined"
+            type="password"
+            onChange={(event) => setPasswordConfirmation(event.target.value)}
+          />
+          {formSubmitted && passwordError && (
+            <Box color="error.main">{passwordError}</Box>
+          )}
+          <StyledButton
+            type="submit"
+            variant="contained"
+            disabled={password !== passwordConfirmation}
+          >
+            Înregistare
+          </StyledButton>
+        </form>
+        <StyledTypography variant="body1">
+          Deja ai un cont? <Link to="/login">Conectează-te acum!</Link>
+        </StyledTypography>
+      </StyledCard>
   );
 };
 

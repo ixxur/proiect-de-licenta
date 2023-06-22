@@ -92,7 +92,7 @@ const ProfileForm = ({ user }) => {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          gap: 3, // Added gap property for spacing
+          gap: 3, 
           marginTop: "5em",
         }}
       >
@@ -103,13 +103,13 @@ const ProfileForm = ({ user }) => {
         />
         {isEditing && (
           <Button onClick={() => setOpenModal(true)}>
-            Change Profile Picture
+            Schimbă poza de profil
           </Button>
         )}
         <TextField
           fullWidth
           className={classes.textField}
-          label="Name"
+          label="Nume"
           value={name}
           onChange={(e) => setName(e.target.value)}
           disabled={!isEditing}
@@ -124,14 +124,14 @@ const ProfileForm = ({ user }) => {
         <TextField
           fullWidth
           className={classes.textField}
-          label="Member since"
+          label="Membru din"
           value={user.registrationDate}
           disabled
         />
         <Button
           onClick={isEditing ? handleSubmit : () => setIsEditing(!isEditing)}
         >
-          {isEditing ? "Save Changes" : "Edit Profile"}
+          {isEditing ? "Salvează modificările" : "Editează profilul"}
         </Button>
         <Modal open={openModal} onClose={() => setOpenModal(false)}>
           <Box

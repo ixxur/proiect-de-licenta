@@ -64,7 +64,7 @@ const SpotDetailsPage = () => {
     fetchSpotandWeather();
   }, [id, userRating]);
 
-  if (!spot) return <Loading/>;
+  if (!spot) return <Loading />;
 
   const { name, description, whenToGo, imageUrl } = spot;
 
@@ -105,11 +105,19 @@ const SpotDetailsPage = () => {
       <Container>
         <Box sx={{ flexGrow: 1, marginTop: 2, marginBottom: 2 }}>
           <Grid container spacing={3}>
-            <Grid item xs={12}>
+            <Grid
+              item
+              xs={12}
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
               <img
                 src={imageUrl}
                 alt={name}
-                style={{ width: "100%", height: "auto" }}
+                style={{ width: "90%", height: "auto" }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -135,7 +143,7 @@ const SpotDetailsPage = () => {
               </Grid>
             </Grid>
             <Grid item xs={12}>
-              <p>{description}</p>
+            <p style={{ whiteSpace: 'pre-wrap' }}>{description}</p>
             </Grid>
             <Grid item xs={12}>
               <h3>Perioada cea mai buna de vizitat: </h3>

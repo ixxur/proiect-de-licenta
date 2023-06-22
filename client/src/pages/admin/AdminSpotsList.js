@@ -1,7 +1,19 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { Table, TableBody, TableCell, TableContainer, TablePagination, TableHead, TableRow, Paper, Button, TableSortLabel } from "@mui/material";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TablePagination,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+  TableSortLabel,
+  Snackbar,
+} from "@mui/material";
 import Navbar from "../../components/Navbar";
 
 function AdminSpotsList() {
@@ -10,6 +22,10 @@ function AdminSpotsList() {
   const [sortOrder, setSortOrder] = useState("asc");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [notification, setNotification] = useState({
+    message: "",
+    open: false,
+  });
 
   useEffect(() => {
     const fetchSpots = async () => {
@@ -48,9 +64,19 @@ function AdminSpotsList() {
       await axios.delete(`/spots/${id}`);
       // Remove the deleted spot from the state
       setSpots(spots.filter((spot) => spot._id !== id));
+      setNotification({ message: "Spot deleted successfully", open: true });
     } catch (error) {
       console.error(`Failed to delete spot with id ${id}`, error);
+      setNotification({ message: "Could not delete spot", open: true });
     }
+  };
+
+  const handleNotificationClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setNotification({ ...notification, open: false });
   };
 
   const handleChangePage = (event, newPage) => {
@@ -69,17 +95,17 @@ function AdminSpotsList() {
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell align="center">Image</TableCell>
+              <TableCell align="center">Imagine</TableCell>
               <TableCell align="center">
                 <TableSortLabel
                   active={sortKey === "name"}
                   direction={sortOrder}
                   onClick={() => handleSort("name")}
                 >
-                  Name
+                  Nume
                 </TableSortLabel>
               </TableCell>
-              <TableCell align="center">Description</TableCell>
+              <TableCell align="center">Descriere</TableCell>
               <TableCell align="center">
                 <TableSortLabel
                   active={sortKey === "avgRating"}
@@ -89,27 +115,53 @@ function AdminSpotsList() {
                   Rating
                 </TableSortLabel>
               </TableCell>
-              <TableCell align="center">Actions</TableCell>
+              <TableCell align="center">Acțiuni</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {spots
-            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            .map((spot) => (
-              <TableRow key={spot._id}>
-                <TableCell align="center" component="th" scope="row">
-                  <img src={spot.imageUrl} alt={spot.name} style={{ width: "100px" }}/>
-                </TableCell>
-                <TableCell align="center">{spot.name}</TableCell>
-                <TableCell align="center">{spot.description.substring(0, 100)+ "..."}</TableCell>
-                <TableCell align="center">{spot.avgRating}</TableCell>
-                <TableCell align="center">
-                  <Button component={Link} to={`/admin/spot/${spot._id}`} variant="outlined" color="primary">View more</Button>
-                  <Button component={Link} to={`/admin/spot/${spot._id}/edit`} variant="outlined" color="secondary">Edit</Button>
-                  <Button onClick={() => deleteSpot(spot._id)} variant="outlined" color="error">Delete</Button>
-                </TableCell>
-              </TableRow>
-            ))}
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((spot) => (
+                <TableRow key={spot._id}>
+                  <TableCell align="center" component="th" scope="row">
+                    <img
+                      src={spot.imageUrl}
+                      alt={spot.name}
+                      style={{ width: "100px" }}
+                    />
+                  </TableCell>
+                  <TableCell align="center">{spot.name}</TableCell>
+                  <TableCell align="center">
+                    {spot.description.substring(0, 100) + "..."}
+                  </TableCell>
+                  <TableCell align="center">{spot.avgRating}</TableCell>
+                  <TableCell align="center">
+                    <Button
+                      component={Link}
+                      to={`/admin/spot/${spot._id}`}
+                      variant="outlined"
+                      color="primary"
+                    >
+                      Detalii
+                    </Button>
+                    <Button
+                      component={Link}
+                      to={`/admin/spot/${spot._id}/edit`}
+                      variant="outlined"
+                      color="secondary"
+                    >
+                      Editează
+                    </Button>
+                    <Button
+                      onClick={() => deleteSpot(spot._id)}
+                      variant="outlined"
+                      color="error"
+                    >
+                      Șterge
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
         <TablePagination
@@ -122,6 +174,12 @@ function AdminSpotsList() {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </TableContainer>
+      <Snackbar
+        open={notification.open}
+        autoHideDuration={6000}
+        onClose={handleNotificationClose}
+        message={notification.message}
+      />
     </>
   );
 }
