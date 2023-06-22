@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { format } from "timeago.js";
 import { useSelector } from "react-redux";
-import { PROFILE_PICTURES } from "../constans/images";
+import { PROFILE_PICTURES } from "../constants/images";
 import { API_URL } from "../constants/url";
 
 function Comment({ comment, username, onUpdate }) {
