@@ -128,6 +128,7 @@ const AddSpotPage = () => {
               <TableCell>
                 <TextField
                   name="whenToGo"
+                  label="perioadă"
                   multiline
                   fullWidth
                   value={whenToGo}

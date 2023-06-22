@@ -123,7 +123,7 @@ const Login = () => {
   //   window.open("http://localhost:5000/auth/google/callback", "_self");
   // };
   const googleAuthHandler = () => {
-    window.open(`http://${API_URL}/auth/google/callback`, "_self");
+    window.open(`${API_URL}/auth/google/callback`, "_self");
     console.log("AUTH GOOGLE");
   };
 
