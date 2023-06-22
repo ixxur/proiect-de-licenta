@@ -124,6 +124,7 @@ const Login = () => {
   // };
   const googleAuthHandler = () => {
     window.open(`http://${API_URL}/auth/google/callback`, "_self");
+    console.log("AUTH GOOGLE");
   };
 
   return (
