@@ -46,13 +46,11 @@ const Login = () => {
 
   const login = async (event) => {
     event.preventDefault();
-    console.log("login1");
     try {
       const response = await axios.post(`${API_URL}/login`, {
         username: username,
         password: password,
       });
-      console.log("login2");
       const responseGet = await axios.get(`${API_URL}/login`, {
         withCredentials: true,
       });
