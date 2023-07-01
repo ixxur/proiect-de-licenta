@@ -1,0 +1,56 @@
+name: Update Version
+
+on:
+  push:
+    branches:
+      - connect-backend-fronted-aks
+    paths:
+      - '.github/workflows/version_workflow.yaml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check Out Code
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Read current version
+        id: read_property
+        uses: christian-draeger/read-properties@1.1.1
+        with:
+          path: './VERSIONS/test'
+          properties: 'version'
+
+      - name: Current version
+        run: echo ${{ steps.read_property.outputs.version }}        
+
+      - name: Bump release version
+        id: bump_version
+        uses: christian-draeger/increment-semantic-version@1.1.0
+        with:
+          current-version: ${{ steps.read_property.outputs.version }}
+          version-fragment: 'bug'
+
+      - name: Remove existing version file
+        uses: JesseTG/rm@v1.0.3
+        with:
+          path: './VERSIONS/test'
+
+      - name: Write new version
+        uses: christian-draeger/write-properties@1.1.0
+        with:
+          path: './VERSIONS/test'
+          property: 'version'
+          value: ${{ steps.bump_version.outputs.next-version }}
+
+      - name: Git commit changes version number
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: 'Updated test to ${{ steps.bump_version.outputs.next-version }}'
+          branch: connect-backend-fronted-aks
+          file_pattern: ./VERSIONS/test
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
