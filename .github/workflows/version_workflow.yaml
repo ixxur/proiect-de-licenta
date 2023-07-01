@@ -46,11 +46,13 @@ jobs:
           property: 'version'
           value: ${{ steps.bump_version.outputs.next-version }}
 
-      - name: Add HTTPS remote
-        run: |
-          git remote add https_remote https://x-access-token:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/ixxur/proiect-de-licenta.git
-        env:
-          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+      # - name: Add HTTPS remote
+      #   run: |
+      #     git remote add https_remote https://x-access-token:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/ixxur/proiect-de-licenta.git
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+
+      # git push https_remote HEAD:connect-backend-fronted-aks
 
       - name: Git commit changes version number
         run: |
@@ -59,7 +61,7 @@ jobs:
           git checkout connect-backend-fronted-aks
           git add ./VERSIONS/test
           git commit -m "Updated test to ${{ steps.bump_version.outputs.next-version }}"
-          git push https_remote HEAD:connect-backend-fronted-aks
+          git push
         env:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       # - name: Git commit changes version number
