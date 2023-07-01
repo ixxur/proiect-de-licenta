@@ -54,21 +54,21 @@ jobs:
 
       # git push https_remote HEAD:connect-backend-fronted-aks
 
+      # - name: Git commit changes version number
+      #   run: |
+      #     git config --local user.email "ruxandranaoprea@yahoo.com"
+      #     git config --local user.name "Ruxandra Oprea"
+      #     git checkout connect-backend-fronted-aks
+      #     git add ./VERSIONS/test
+      #     git commit -m "Updated test to ${{ steps.bump_version.outputs.next-version }}"
+      #     git push
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       - name: Git commit changes version number
-        run: |
-          git config --local user.email "ruxandranaoprea@yahoo.com"
-          git config --local user.name "Ruxandra Oprea"
-          git checkout connect-backend-fronted-aks
-          git add ./VERSIONS/test
-          git commit -m "Updated test to ${{ steps.bump_version.outputs.next-version }}"
-          git push
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: 'Updated test to ${{ steps.bump_version.outputs.next-version }}'
+          branch: connect-backend-fronted-aks
+          file_pattern: ./VERSIONS/test
         env:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-      # - name: Git commit changes version number
-      #   uses: stefanzweifel/git-auto-commit-action@v4
-      #   with:
-      #     commit_message: 'Updated test to ${{ steps.bump_version.outputs.next-version }}'
-      #     branch: connect-backend-fronted-aks
-      #     file_pattern: ./VERSIONS/test
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
