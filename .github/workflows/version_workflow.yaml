@@ -57,8 +57,8 @@ jobs:
           git config --local user.email "ruxandranaoprea@yahoo.com"
           git config --local user.name "Ruxandra Oprea"
           git checkout connect-backend-fronted-aks
-          git add ./VERSIONS/client_version
-          git commit -m "Updated client_version to ${{ steps.bump_version.outputs.next-version }}"
+          git add ./VERSIONS/test
+          git commit -m "Updated test to ${{ steps.bump_version.outputs.next-version }}"
           git push https_remote HEAD:connect-backend-fronted-aks
         env:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
