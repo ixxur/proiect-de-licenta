@@ -15,7 +15,7 @@ jobs:
       - name: Check Out Code
         uses: actions/checkout@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
       - name: Read current version
         id: read_property
@@ -71,7 +71,7 @@ jobs:
           commit_message: 'Updated client_version to ${{ steps.bump_version.outputs.next-version }}'
           commit_user_name: GitHub Actions
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
       # - name: Git commit changes version number
       #   run: |
