@@ -73,8 +73,12 @@ const Map = () => {
             lat: position.coords.latitude,
             lng: position.coords.longitude,
           };
-          console.log(location);
-          setCurrentLocation(location);
+          //console.log(location);
+          //setCurrentLocation(location);
+          setCurrentLocation({
+            lat: 44.4356,
+            lng: 26.0995
+          });
         },
         function (error) {
           console.log("Geolocation error: ", error);
@@ -87,6 +91,10 @@ const Map = () => {
       );
     } else {
       console.log("Geolocation is not supported by this browser.");
+      setCurrentLocation({
+        lat: 44.4356,
+        lng: 26.0995
+      });
     }
 
     getAllSpots();
