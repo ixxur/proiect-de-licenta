@@ -15,7 +15,7 @@ jobs:
       - name: Check Out Code
         uses: actions/checkout@v2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
       - name: Read current version
         id: read_property
@@ -46,11 +46,27 @@ jobs:
           property: 'version'
           value: ${{ steps.bump_version.outputs.next-version }}
 
-      - name: Git commit changes version number
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: 'Updated test to ${{ steps.bump_version.outputs.next-version }}'
-          branch: connect-backend-fronted-aks
-          file_pattern: ./VERSIONS/test
+      - name: Add HTTPS remote
+        run: |
+          git remote add https_remote https://x-access-token:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/ixxur/proiect-de-licenta.git
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+
+      - name: Git commit changes version number
+        run: |
+          git config --local user.email "ruxandranaoprea@yahoo.com"
+          git config --local user.name "Ruxandra Oprea"
+          git checkout connect-backend-fronted-aks
+          git add ./VERSIONS/client_version
+          git commit -m "Updated client_version to ${{ steps.bump_version.outputs.next-version }}"
+          git push https_remote HEAD:connect-backend-fronted-aks
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+      # - name: Git commit changes version number
+      #   uses: stefanzweifel/git-auto-commit-action@v4
+      #   with:
+      #     commit_message: 'Updated test to ${{ steps.bump_version.outputs.next-version }}'
+      #     branch: connect-backend-fronted-aks
+      #     file_pattern: ./VERSIONS/test
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
