@@ -67,3 +67,6 @@ jobs:
           file_pattern: ./VERSIONS/client_version
           branch: connect-backend-fronted-aks
           commit_message: 'Updated client_version to ${{ steps.bump_version.outputs.next-version }}'
+          commit_user_name: GitHub Actions
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
