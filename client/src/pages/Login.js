@@ -110,7 +110,7 @@ const Login = () => {
         dispatch(loginSuccess(user));
         // setLoginStatus(user.username);
         navigate("/home");
-        console.log(user);
+        // console.log(user);
       } catch (error) {
         console.log(error);
       }
