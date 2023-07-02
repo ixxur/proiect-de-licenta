@@ -19,7 +19,7 @@ const Navbar = () => {
     try {
       const response = await axios.post(`${API_URL}/logout`);
       dispatch(logout(user));
-      console.log(response.data.message);
+      // console.log(response.data.message);
       navigate("/login");
     } catch (err) {
       console.log(err);

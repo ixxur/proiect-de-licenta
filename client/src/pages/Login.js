@@ -54,7 +54,7 @@ const Login = () => {
       const responseGet = await axios.get(`${API_URL}/login`, {
         withCredentials: true,
       });
-      console.log(responseGet.data);
+      // console.log(responseGet.data);
       const { user } = response.data;
       // //console.log(user);
       const favoritesResponse = await axios.get(

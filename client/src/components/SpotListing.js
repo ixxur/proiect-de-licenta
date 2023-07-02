@@ -30,7 +30,7 @@ const SpotListing = () => {
     const getAllSpots = async () => {
       try {
         const spotsResponse = await axios.get(`${API_URL}/spots`);
-        console.log(spotsResponse.data);
+        // console.log(spotsResponse.data);
         setSpots(spotsResponse.data);
       } catch (err) {
         console.log("Error fetching spots ", err);

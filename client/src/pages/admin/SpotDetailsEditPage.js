@@ -78,7 +78,7 @@ const SpotDetailsEditPage = () => {
     // Send a PUT request to the server with the new data
     try {
       const response = await axios.put(`${API_URL}/spots/${id}`, formData);
-      console.log(response);
+      // console.log(response);
       setNotification({ open: true, message: "Spot updated successfully" });
     } catch (error) {
       console.log("Error updating spot:", error);

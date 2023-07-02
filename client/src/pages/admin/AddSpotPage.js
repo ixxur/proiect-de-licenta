@@ -51,7 +51,7 @@ const AddSpotPage = () => {
     axios
       .post(`${API_URL}/spot`, spot)
       .then((response) => {
-        console.log(response.data);
+        // console.log(response.data);
         setNotification({ message: "Spot saved successfully", open: true });
       })
       .catch((error) => {

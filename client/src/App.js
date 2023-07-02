@@ -33,19 +33,19 @@ function App() {
 
   useEffect(() => {
     const checkLoginStatus = async () => {
-      console.log("useEffect app 1");
+      // console.log("useEffect app 1");
       try {
         const response = await axios.get(`${API_URL}/login`, {
           withCredentials: true,
         });
-        console.log("useEffect app 2");
+        // console.log("useEffect app 2");
         const { user } = response.data;
-        console.log(response);
+        // console.log(response);
         const favoritesResponse = await axios.get(
           `${API_URL}/users/${user.username}`
         );
-        console.log(favoritesResponse);
-        console.log(favoritesResponse.data.favorites);
+        // console.log(favoritesResponse);
+        // console.log(favoritesResponse.data.favorites);
         const name = favoritesResponse.data.name;
         const role = favoritesResponse.data.role;
         const profilePicture = favoritesResponse.data.profilePicture;
@@ -59,10 +59,10 @@ function App() {
           spotId: rating.spotId,
           rating: rating.rating,
         }));
-        console.log(ratings);
-        console.log(favorites);
-        console.log(user);
-        console.log(response.data);
+        // console.log(ratings);
+        // console.log(favorites);
+        // console.log(user);
+        // console.log(response.data);
         dispatch(
           loginSuccess({
             user,
