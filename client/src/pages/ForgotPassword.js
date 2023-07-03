@@ -54,7 +54,7 @@ const ForgotPassword = () => {
         password: newPassword,
       });
 
-      // console.log(response.data);
+      // //console.log(response.data);
       navigate("/login");
     } catch (error) {
       console.log(error);
