@@ -36,6 +36,7 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [emailError, setEmailError] = useState("");
   const [formSubmitted, setFormSubmitted] = useState(false);
 
   const navigate = useNavigate();
@@ -45,6 +46,11 @@ const Register = () => {
     setFormSubmitted(true);
 
     if (!validatePassword()) {
+      return;
+    }
+
+    if (!validateEmail()) {
+      // console.log('Invalid email format');
       return;
     }
 
@@ -59,6 +65,17 @@ const Register = () => {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const validateEmail = () => {
+    let error = "";
+    // This regular expression will validate most email formats.
+    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+    if(emailRegex.test(username) === 0) {
+      error = "Email invalid."
+    }
+    setEmailError(error);
+    return error === "";
   };
 
   const validatePassword = () => {
@@ -98,6 +115,9 @@ const Register = () => {
           variant="outlined"
           onChange={(event) => setUsername(event.target.value)}
         />
+        {formSubmitted && emailError && (
+          <Box color="error.main">{emailError}</Box>
+        )}
         <StyledTextField
           fullWidth
           margin="normal"

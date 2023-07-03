@@ -35,6 +35,7 @@ const ForgotPassword = () => {
   const [error, setError] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [emailError, setEmailError] = useState("");
   const [formSubmitted, setFormSubmitted] = useState(false);
 
   const navigate = useNavigate();
@@ -44,6 +45,10 @@ const ForgotPassword = () => {
     setFormSubmitted(true);
 
     if (!validatePassword()) {
+        return;
+      }
+
+    if (!validateEmail()) {
         return;
       }
 
@@ -74,8 +79,19 @@ const ForgotPassword = () => {
     } else if (!/\W/.test(newPassword)) {
       error = 'Parola trebuie să conțină minim un caracter special.';
     }
-    setNewPassword(error);
+    setPasswordError(error);
     return error === '';
+  };
+
+  const validateEmail = () => {
+    let error = "";
+    // This regular expression will validate most email formats.
+    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+    if(emailRegex.test(email) === 0) {
+      error = "Email invalid."
+    }
+    setEmailError(error);
+    return error === "";
   };
 
   return (
@@ -90,6 +106,9 @@ const ForgotPassword = () => {
           variant="outlined"
           onChange={(event) => setEmail(event.target.value)}
         />
+        {formSubmitted && emailError && (
+          <Box color="error.main">{emailError}</Box>
+        )}
         <StyledTextField
           fullWidth
           label="Parola nouă"
