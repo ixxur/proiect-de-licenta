@@ -40,6 +40,8 @@ const Register = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
+  const [error, setError] = useState("");
+  const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [formSubmitted, setFormSubmitted] = useState(false);
 
@@ -49,7 +51,7 @@ const Register = () => {
     event.preventDefault();
     setFormSubmitted(true);
 
-    if (!validatePassword()) {
+    if (!validateEmail() || !validatePassword()) {
       return;
     }
 
@@ -63,7 +65,23 @@ const Register = () => {
       navigate("/login");
     } catch (error) {
       console.log(error);
+      if (error.response && error.response.status === 400) {
+        // Error 400 is a Bad Request error. This can occur if the email is not valid or if there is no account with that email.
+        setEmailError("Please enter a valid email address.");
+      } else {
+        setError("An error occurred while resetting your password.");
+      }
+  }};
+
+  const validateEmail = () => {
+    let error = "";
+    // This regular expression will validate most email formats.
+    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+    if(emailRegex.test(username) === 0) {
+      error = "Email invalid."
     }
+    setEmailError(error);
+    return error === "";
   };
 
   const validatePassword = () => {
@@ -103,6 +121,9 @@ const Register = () => {
             variant="outlined"
             onChange={(event) => setUsername(event.target.value)}
           />
+           {formSubmitted && emailError && (
+          <Box color="error.main">{emailError}</Box>
+        )}
           <StyledTextField
             fullWidth
             margin="normal"
@@ -137,4 +158,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+ export default Register;
