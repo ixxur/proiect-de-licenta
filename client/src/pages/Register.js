@@ -35,6 +35,7 @@ const Register = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
+  const [error, setError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -45,12 +46,7 @@ const Register = () => {
     event.preventDefault();
     setFormSubmitted(true);
 
-    if (!validatePassword()) {
-      return;
-    }
-
-    if (!validateEmail()) {
-      // console.log('Invalid email format');
+    if (!validateEmail() || !validatePassword()) {
       return;
     }
 
@@ -64,6 +60,12 @@ const Register = () => {
       navigate("/login");
     } catch (error) {
       console.log(error);
+      if (error.response && error.response.status === 400) {
+        // Error 400 is a Bad Request error. This can occur if the email is not valid or if there is no account with that email.
+        setEmailError("Please enter a valid email address.");
+      } else {
+        setError("An error occurred while resetting your password.");
+      }
     }
   };
 

@@ -44,10 +44,8 @@ const ForgotPassword = () => {
     event.preventDefault();
     setFormSubmitted(true);
 
-    if (!validateEmail()) {
-      if (!validatePassword()) {
-        return;
-      }
+    if (!validateEmail() || !validatePassword()) {
+      return;
     }
 
     try {
@@ -56,11 +54,16 @@ const ForgotPassword = () => {
         password: newPassword,
       });
 
-      console.log(response.data);
+      // console.log(response.data);
       navigate("/login");
     } catch (error) {
       console.log(error);
-      setError("An error occurred while resetting your password.");
+      if (error.response && error.response.status === 400) {
+        // Error 400 is a Bad Request error. This can occur if the email is not valid or if there is no account with that email.
+        setEmailError("Please enter a valid email address.");
+      } else {
+        setError("An error occurred while resetting your password.");
+      }
     }
   };
 
