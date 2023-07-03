@@ -44,13 +44,11 @@ const ForgotPassword = () => {
     event.preventDefault();
     setFormSubmitted(true);
 
-    if (!validatePassword()) {
-        return;
-      }
-
     if (!validateEmail()) {
+      if (!validatePassword()) {
         return;
       }
+    }
 
     try {
       const response = await axios.post("/forgot", {
@@ -67,28 +65,28 @@ const ForgotPassword = () => {
   };
 
   const validatePassword = () => {
-    let error = '';
-    if(newPassword.length < 8) {
-      error = 'Parola trebuie să conțină minim 8 caractere.';
+    let error = "";
+    if (newPassword.length < 8) {
+      error = "Parola trebuie să conțină minim 8 caractere.";
     } else if (!/[a-z]/.test(newPassword)) {
-      error = 'Parola trebuie să conțină minim o literă mică.';
+      error = "Parola trebuie să conțină minim o literă mică.";
     } else if (!/[A-Z]/.test(newPassword)) {
-      error = 'Parola trebuie să conțină minim o majusculă.';
+      error = "Parola trebuie să conțină minim o majusculă.";
     } else if (!/\d/.test(newPassword)) {
-      error = 'Parola trebuie să conțină minim un numar.';
+      error = "Parola trebuie să conțină minim un numar.";
     } else if (!/\W/.test(newPassword)) {
-      error = 'Parola trebuie să conțină minim un caracter special.';
+      error = "Parola trebuie să conțină minim un caracter special.";
     }
     setPasswordError(error);
-    return error === '';
+    return error === "";
   };
 
   const validateEmail = () => {
     let error = "";
     // This regular expression will validate most email formats.
     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
-    if(emailRegex.test(email) === 0) {
-      error = "Email invalid."
+    if (emailRegex.test(email) === 0) {
+      error = "Email invalid.";
     }
     setEmailError(error);
     return error === "";
