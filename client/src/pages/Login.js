@@ -89,7 +89,7 @@ const Login = () => {
           registrationDate,
         })
       );
-      console.log(user);
+      // console.log(user);
       navigate("/home");
     } catch (error) {
       setLoginError("Email sau parola invalide.");
@@ -97,13 +97,13 @@ const Login = () => {
   };
 
   useEffect(() => {
-    console.log("useEffect login 1");
+    // console.log("useEffect login 1");
     const checkLoginStatus = async () => {
       try {
-        console.log("useEffect login 2");
+        // console.log("useEffect login 2");
         const response = await axios.get("/login");
-        console.log("useEffect login 3");
-        console.log(response);
+        // console.log("useEffect login 3");
+        // console.log(response);
         const { user } = response.data;
         dispatch(loginSuccess(user));
         // setLoginStatus(user.username);
@@ -122,7 +122,7 @@ const Login = () => {
   // };
   const googleAuthHandler = () => {
     window.open(`${API_URL}/auth/google/callback`, "_self");
-    console.log("AUTH GOOGLE");
+    // console.log("AUTH GOOGLE");
   };
 
   return (

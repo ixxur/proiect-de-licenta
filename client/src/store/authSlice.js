@@ -7,10 +7,10 @@ import { API_URL } from "../constants/url";
 export const toggleFavoriteSpot = createAsyncThunk(
   "auth/toggleFavoriteSpot",
   async (spotId, { getState, dispatch }) => {
-    console.log(spotId);
+    // console.log(spotId);
     
     const { username, favorites } = getState().auth.user;
-    console.log(getState().auth.user);
+    // console.log(getState().auth.user);
     try {
       if (favorites.includes(spotId)) {
         await axios.delete(`${API_URL}/users/${username}/favorites`, {
@@ -30,9 +30,9 @@ export const toggleFavoriteSpot = createAsyncThunk(
 export const toggleVisitedSpot = createAsyncThunk(
   "auth/toggleVisitedSpot",
   async (spotId, { getState, dispatch }) => {
-    console.log(spotId);
+    // console.log(spotId);
     const { username, visited } = getState().auth.user;
-    console.log(getState().auth.user);
+    // console.log(getState().auth.user);
     try {
       if (visited.includes(spotId)) {
         await axios.delete(`${API_URL}/users/${username}/visited`, {
@@ -122,16 +122,16 @@ export const authSlice = createSlice({
       state.user.registrationDate = new Date(
         action.payload.registrationDate
       ).toLocaleDateString("en-GB");
-      console.log(state.user.name);
-      console.log(action.payload.user.username);
+      // console.log(state.user.name);
+      // console.log(action.payload.user.username);
       state.user.profilePicture = action.payload.profilePicture;
       state.user.favorites = action.payload.favorites;
       state.user.visited = action.payload.visited;
-      console.log(state.user.registrationDate);
-      console.log(action.payload.favorites);
+      // console.log(state.user.registrationDate);
+      // console.log(action.payload.favorites);
       state.user.ratings = action.payload.ratings;
-      console.log(action.payload.ratings);
-      console.log(action.payload);
+      // console.log(action.payload.ratings);
+      // console.log(action.payload);
     },
     logout: (state) => {
       state.isLoggedIn = false;
@@ -145,36 +145,36 @@ export const authSlice = createSlice({
       state.user.ratings = [];
     },
     addFavoriteSpot: (state, action) => {
-      console.log(state);
-      console.log("======================");
-      console.log(state.user);
-      console.log(action.payload);
+      // console.log(state);
+      // console.log("======================");
+      // console.log(state.user);
+      // console.log(action.payload);
       state.user.favorites.push(action.payload);
     },
     removeFavoriteSpot: (state, action) => {
-      console.log(action.payload);
+      // console.log(action.payload);
       const newFavorites = state.user.favorites.filter(
         (spotId) => spotId !== action.payload
       );
-      console.log(newFavorites);
+      // console.log(newFavorites);
       state.user.favorites = newFavorites;
-      console.log(state.user.favorites);
+      // console.log(state.user.favorites);
     },
     addVisitedSpot: (state, action) => {
-      console.log(state);
-      console.log("======================");
-      console.log(state.user);
-      console.log(action.payload);
+      // console.log(state);
+      // console.log("======================");
+      // console.log(state.user);
+      // console.log(action.payload);
       state.user.visited.push(action.payload);
     },
     removeVisitedSpot: (state, action) => {
-      console.log(action.payload);
+      // console.log(action.payload);
       const newVisited = state.user.visited.filter(
         (spotId) => spotId !== action.payload
       );
-      console.log(newVisited);
+      // console.log(newVisited);
       state.user.visited = newVisited;
-      console.log(state.user.visited);
+      // console.log(state.user.visited);
     },
   },
   extraReducers: (builder) => {
@@ -195,12 +195,12 @@ export const authSlice = createSlice({
         }
       })
       .addCase(updateUserData.fulfilled, (state, action) => {
-        console.log(action.payload.user);
-        console.log(action.payload.user.profilePicture);
-        console.log(action.payload.profilePicture);
+        // console.log(action.payload.user);
+        // console.log(action.payload.user.profilePicture);
+        // console.log(action.payload.profilePicture);
         state.user.name = action.payload.user.name;
         state.user.profilePicture = action.payload.user.profilePicture;
-        console.log(state.user);
+        // console.log(state.user);
       });
   },
 });

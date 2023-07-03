@@ -39,7 +39,7 @@ const SpotListing = () => {
     getAllSpots();
   }, []);
 
-  console.log(spots);
+  // console.log(spots);
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
   };
