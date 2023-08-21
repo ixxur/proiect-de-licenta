@@ -1,3 +1,4 @@
+import React from 'react';
 import Navbar from "../components/Navbar";
 import Map from "../components/Map";
 import {Container, Box } from "@mui/material";
